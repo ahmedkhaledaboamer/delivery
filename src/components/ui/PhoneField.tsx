@@ -15,7 +15,7 @@ type Props = {
 
 export const isValidPhone = (v: string) => v.replace(/\D/g, "").length >= 8;
 
-/** Phone input with the "+971 |" prefix and a green check once valid. */
+/** Phone input with the "+971 |" prefix and a violet check once valid. */
 export function PhoneField({ label = "Mobile number", hint, value, onChangeText, countryCode = "+971", error }: Props) {
   return (
     <TextField

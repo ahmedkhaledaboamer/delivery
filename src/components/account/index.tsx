@@ -6,7 +6,7 @@ import { colors } from "@/constants/theme";
 
 type IconName = keyof typeof Ionicons.glyphMap;
 
-/** Ionicon inside a rounded light-green tile (stand-in for the Figma icon art). */
+/** Ionicon inside a rounded light-violet tile (stand-in for the Figma icon art). */
 export function IconTile({
   name,
   size = 40,

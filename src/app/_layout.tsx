@@ -25,7 +25,7 @@ export default function RootLayout() {
     <Provider store={store}>
       <QueryClientProvider client={queryClient}>
         <SafeAreaProvider>
-          <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: "#F8FAF5" }, animation: "slide_from_right" }}>
+          <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: "#FAFAFF" }, animation: "slide_from_right" }}>
             <Stack.Screen name="index" options={{ animation: "none" }} />
             <Stack.Screen name="(tabs)" options={{ animation: "fade" }} />
           </Stack>

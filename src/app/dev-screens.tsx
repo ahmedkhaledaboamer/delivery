@@ -17,7 +17,7 @@ const SECTIONS: { title: string; items: Item[] }[] = [
     title: "Onboarding & auth (1.png, 2.png, 3.png)",
     items: [
       { label: "Splash", href: "/onboarding/splash" },
-      { label: "Welcome to RUSH", href: "/onboarding/welcome" },
+      { label: "Welcome to APEX AORA", href: "/onboarding/welcome" },
       { label: "Pick up / Drop off", href: "/onboarding/pickup-dropoff" },
       { label: "Always in sight", href: "/onboarding/live-tracking" },
       { label: "Sign in", href: "/auth/sign-in" },
@@ -76,7 +76,7 @@ const SECTIONS: { title: string; items: Item[] }[] = [
       { label: "Settings", href: "/account/settings" },
       { label: "Choose your language", href: "/account/language" },
       { label: "Notifications", href: "/notifications" },
-      { label: "About RUSH", href: "/account/about" },
+      { label: "About APEX AORA", href: "/account/about" },
       { label: "Privacy Policy", href: "/account/privacy" },
       { label: "Terms of Service", href: "/account/terms" },
       { label: "My Wallet", href: "/account/wallet" },

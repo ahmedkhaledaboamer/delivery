@@ -1,53 +1,47 @@
-import { useEffect, useRef, useState } from "react";
-import { Animated, Easing, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { useEffect, useRef } from "react";
+import { Animated, Easing, Image, View } from "react-native";
 import { router } from "expo-router";
+import { StatusBar } from "expo-status-bar";
+import { LinearGradient } from "expo-linear-gradient";
 import { Logo } from "@/components/ui";
-import { RouteLine } from "@/components/onboarding";
+import { images } from "@/constants/images";
 
-/** Splash: small R mark grows into the full RUSH logo, then moves on to Welcome. */
+/** Same colour as the native splash (app.json) so the hand-off is seamless. */
+export const SPLASH_BG = "#140B34";
+
+/** Splash: the scooter rides in from the left, then the APEX AORA wordmark fades in. Moves on to Welcome. */
 export default function Splash() {
-  const scale = useRef(new Animated.Value(0.6)).current;
-  const markOpacity = useRef(new Animated.Value(0)).current;
-  const fullOpacity = useRef(new Animated.Value(0)).current;
-  const routeOpacity = useRef(new Animated.Value(1)).current;
-  const [showFull, setShowFull] = useState(false);
+  const ride = useRef(new Animated.Value(0)).current; // 0 = off-screen left, 1 = centred
+  const word = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
     Animated.sequence([
-      Animated.parallel([
-        Animated.timing(markOpacity, { toValue: 1, duration: 350, useNativeDriver: true }),
-        Animated.timing(scale, { toValue: 1, duration: 550, easing: Easing.out(Easing.back(1.5)), useNativeDriver: true }),
-      ]),
-      Animated.parallel([
-        Animated.timing(markOpacity, { toValue: 0, duration: 250, useNativeDriver: true }),
-        Animated.timing(routeOpacity, { toValue: 0, duration: 400, useNativeDriver: true }),
-      ]),
-    ]).start(() => {
-      setShowFull(true);
-      Animated.timing(fullOpacity, { toValue: 1, duration: 350, useNativeDriver: true }).start();
-    });
-    const t = setTimeout(() => router.replace("/onboarding/welcome"), 1800);
+      Animated.timing(ride, { toValue: 1, duration: 700, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
+      Animated.timing(word, { toValue: 1, duration: 400, useNativeDriver: true }),
+    ]).start();
+    const t = setTimeout(() => router.replace("/onboarding/welcome"), 2000);
     return () => clearTimeout(t);
-  }, [fullOpacity, markOpacity, routeOpacity, scale]);
+  }, [ride, word]);
 
   return (
-    <SafeAreaView className="flex-1 bg-surface">
-      <View className="flex-1 items-center justify-center">
-        {/* TODO: replace with Figma illustration (logo mark / full logo assets) */}
-        {!showFull ? (
-          <Animated.View style={{ opacity: markOpacity, transform: [{ scale }] }}>
-            <Logo size="lg" markOnly />
-          </Animated.View>
-        ) : (
-          <Animated.View style={{ opacity: fullOpacity }}>
-            <Logo size="lg" />
-          </Animated.View>
-        )}
-      </View>
-      <Animated.View style={{ opacity: routeOpacity }} className="px-8 pb-16">
-        <RouteLine height={90} />
+    <View className="flex-1 items-center justify-center" style={{ backgroundColor: SPLASH_BG }}>
+      <StatusBar style="light" />
+      {/* soft violet glow behind the logo */}
+      <LinearGradient
+        colors={["rgba(124,58,237,0.35)", "rgba(20,11,52,0)"]}
+        style={{ position: "absolute", width: 420, height: 420, borderRadius: 210 }}
+      />
+      <Animated.View
+        style={{
+          opacity: ride,
+          transform: [{ translateX: ride.interpolate({ inputRange: [0, 1], outputRange: [-260, 0] }) }],
+        }}
+      >
+        <Logo size="lg" markOnly />
       </Animated.View>
-    </SafeAreaView>
+      <Animated.View style={{ opacity: word, marginTop: 8 }}>
+        <Image source={images.logoWordmarkLight} resizeMode="contain" style={{ width: 240, height: 240 * (54 / 531) }} />
+      </Animated.View>
+    </View>
   );
 }

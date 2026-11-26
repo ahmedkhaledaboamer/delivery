@@ -32,7 +32,7 @@ export default function LanguageScreen() {
     >
       <View className="bg-brand-lighter pb-5">
         <Header actions />
-        <PageTitle title="Choose your language" subtitle="Make RUSH feel right for you." />
+        <PageTitle title="Choose your language" subtitle="Make APEX AORA feel right for you." />
       </View>
       <View className="px-5 pt-5">
         {OPTIONS.map((o) => (

@@ -3,7 +3,7 @@ import { ActivityIndicator, Alert, Pressable, Share, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import * as Clipboard from "expo-clipboard";
 import { router, Stack, useLocalSearchParams } from "expo-router";
-import { Button, Card, Header, Logo, Screen, Text } from "@/components/ui";
+import { Button, Card, GradientText, Header, Logo, Screen, Text } from "@/components/ui";
 import { ArrowContinueButton } from "@/components/send";
 import { useOrder } from "@/api/hooks";
 import type { Order } from "@/api/types";
@@ -14,7 +14,7 @@ const goHome = () => router.replace("/(tabs)");
 
 function receiptText(o: Order) {
   return [
-    "RUSH — Payment Receipt",
+    "APEX AORA — Payment Receipt",
     `Order: ${o.code}`,
     `Date: ${formatDate(o.paidAt)} ${formatTime(o.paidAt)}`,
     `From: ${o.pickup.address}`,
@@ -105,7 +105,7 @@ export default function PaymentSuccessScreen() {
 
       <View className="items-center px-5">
         <ReceiptIllustration />
-        <Text className="mt-4 font-inter-bold text-[28px] text-brand-dark">Payment Successful</Text>
+        <View className="mt-4"><GradientText className="font-inter-bold text-[28px]">Payment Successful</GradientText></View>
         <Text className="mt-1 px-10 text-center text-sm leading-6 text-body">Your payment has been completed successfully.</Text>
       </View>
 

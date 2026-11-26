@@ -4,7 +4,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { Text } from "./Text";
 import { colors } from "@/constants/theme";
 
-/** Round radio dot (empty grey ring / filled green). */
+/** Round radio dot (empty grey ring / filled violet). */
 export function RadioDot({ selected }: { selected: boolean }) {
   return (
     <View

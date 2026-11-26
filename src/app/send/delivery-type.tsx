@@ -42,7 +42,7 @@ export default function DeliveryTypeScreen() {
           <OptionCard
             selected={speed === "minutes"}
             onPress={() => dispatch(setSpeed("minutes"))}
-            title="Rush In Minutes"
+            title="Express In Minutes"
             description="Priority pickup and delivery in the shortest possible time."
             media={<Media icon="flash-outline" />}
           />

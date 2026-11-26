@@ -1,6 +1,6 @@
-# RUSH — Delivery App
+# APEX AORA — Delivery App
 
-React Native (Expo) delivery app built from the RUSH Figma design.
+React Native (Expo) delivery app (originally designed in Figma as RUSH, rebranded to APEX AORA).
 
 **Stack:** Expo SDK 58 · Expo Router · NativeWind (Tailwind) · Redux Toolkit · TanStack Query · TypeScript
 
@@ -23,3 +23,5 @@ Scan the QR code with Expo Go.
 - `design/` — design screenshots used as reference
 
 In development, the grid button on Home opens a list of every screen.
+- `design/original-illustrations/` — the green (pre-rebrand) illustrations
+- `design/logo-original.png` — the APEX AORA logo as supplied

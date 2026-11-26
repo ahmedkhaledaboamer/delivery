@@ -22,7 +22,7 @@ export type TimelineStep = { label: string; time: string | null };
 
 export type Order = {
   id: string;
-  code: string; // "#RSH-10428"
+  code: string; // "#APX-10428"
   flow: FlowType;
   status: OrderStatus;
   createdAt: string; // ISO

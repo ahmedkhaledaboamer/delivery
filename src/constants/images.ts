@@ -1,5 +1,9 @@
-/** Illustrations exported from the Rush Figma design (assets/images). */
+/** Illustrations exported from the Apex Aora Figma design (assets/images). */
 export const images = {
+  logoFullDark: require("../../assets/images/logo-full-dark.png"),
+  logoFullLight: require("../../assets/images/logo-full-light.png"),
+  logoMark: require("../../assets/images/logo-mark.png"),
+  logoWordmarkLight: require("../../assets/images/logo-wordmark-light.png"),
   box: require("../../assets/images/box.png"),
   shoppingBag: require("../../assets/images/shopping-bag.png"),
   handsBox: require("../../assets/images/hands-box.png"),
@@ -12,7 +16,7 @@ export const images = {
   store: require("../../assets/images/store.png"),
   storeConfirmed: require("../../assets/images/store-confirmed.png"),
   shoppingBanner: require("../../assets/images/shopping-banner.png"),
-  greenWaveBg: require("../../assets/images/green-wave-bg.jpg"),
+  brandWaveBg: require("../../assets/images/brand-wave-bg.jpg"),
   walletCardBg: require("../../assets/images/wallet-card-bg.jpg"),
   homeBgCar: require("../../assets/images/home-bg-car.jpg"),
   homeBgScooter: require("../../assets/images/home-bg-scooter.jpg"),

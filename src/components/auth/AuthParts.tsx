@@ -8,7 +8,7 @@ import { useAppDispatch, useAppSelector } from "@/store";
 import { setRole, type Role } from "@/store/slices/authSlice";
 import { colors } from "@/constants/theme";
 
-/** Light green top band: back + small logo, eyebrow, title, subtitle. */
+/** Light violet top band: back + small logo, eyebrow, title, subtitle. */
 export function AuthHeader({ title, subtitle, onBack }: { title: string; subtitle: string; onBack?: () => void }) {
   return (
     <SafeAreaView edges={["top"]} className="bg-brand-lighter">
@@ -72,7 +72,7 @@ export function SocialButtons() {
   );
 }
 
-/** Centered green text link ("Continue as a guest"). */
+/** Centered violet text link ("Continue as a guest"). */
 export function TextLink({ title, onPress }: { title: string; onPress: () => void }) {
   return (
     <Pressable accessibilityRole="link" hitSlop={8} onPress={onPress} className="items-center py-2">
@@ -81,7 +81,7 @@ export function TextLink({ title, onPress }: { title: string; onPress: () => voi
   );
 }
 
-/** "New to RUSH? Create an account" style footer line. */
+/** "New to APEX AORA? Create an account" style footer line. */
 export function SwitchAuthLine({ prompt, action, to }: { prompt: string; action: string; to: "/auth/sign-in" | "/auth/sign-up" }) {
   return (
     <View className="mt-3 flex-row justify-center">

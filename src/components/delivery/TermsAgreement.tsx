@@ -18,7 +18,7 @@ export function TermsAgreement({ className = "" }: { className?: string }) {
         <Text className="font-inter-semibold text-xs text-brand" onPress={() => router.push("/account/terms")}>
           Disclaimer
         </Text>
-        , and confirm that Rush is not responsible for the contents of my package.
+        , and confirm that Apex Aora is not responsible for the contents of my package.
       </Text>
     </Checkbox>
   );

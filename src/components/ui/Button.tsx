@@ -1,7 +1,8 @@
 import { ActivityIndicator, Pressable, PressableProps, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { LinearGradient } from "expo-linear-gradient";
 import { Text } from "./Text";
-import { colors } from "@/constants/theme";
+import { brandGradient, brandGradientEnd, brandGradientStart, colors } from "@/constants/theme";
 
 type Variant = "primary" | "outline" | "outlineDark" | "ghost" | "danger" | "dark";
 
@@ -15,7 +16,7 @@ type Props = Omit<PressableProps, "children"> & {
 };
 
 const container: Record<Variant, string> = {
-  primary: "bg-brand",
+  primary: "bg-brand overflow-hidden", // + logo gradient layer below
   outline: "bg-white border border-brand",
   outlineDark: "bg-white border border-ink",
   ghost: "bg-transparent",
@@ -53,6 +54,14 @@ export function Button({ title, variant = "primary", loading, disabled, icon, si
       } ${className}`}
       {...props}
     >
+      {variant === "primary" && (
+        <LinearGradient
+          colors={[...brandGradient]}
+          start={brandGradientStart}
+          end={brandGradientEnd}
+          style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0 }}
+        />
+      )}
       {loading ? (
         <ActivityIndicator color={iconColor[variant]} />
       ) : (

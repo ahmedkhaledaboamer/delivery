@@ -33,7 +33,7 @@ export default function SignIn() {
       footer={
         <View>
           <Button title="Sign in" disabled={!valid} loading={sendOtp.isPending} onPress={submit} />
-          <SwitchAuthLine prompt="New to RUSH?" action="Create an account" to="/auth/sign-up" />
+          <SwitchAuthLine prompt="New to APEX AORA?" action="Create an account" to="/auth/sign-up" />
         </View>
       }
     >

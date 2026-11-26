@@ -109,7 +109,7 @@ export default function ReviewScreen() {
           <Text className="text-sm">As soon as possible · Pickup in 10–15 min</Text>
           <Text className="mt-0.5 text-xs text-muted">
             ETA {ETA_MINUTES[0]}–{ETA_MINUTES[1]} min · {draft.vehicle === "car" ? "Car" : "Motorcycle"} ·{" "}
-            {draft.speed === "minutes" ? "Rush In Minutes" : "Standard"}
+            {draft.speed === "minutes" ? "Express In Minutes" : "Standard"}
           </Text>
           <Text className="mt-0.5 text-xs text-muted">Cash on delivery · Receiver pays at drop-off</Text>
         </ReviewSection>

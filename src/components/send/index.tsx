@@ -2,7 +2,8 @@ import { ReactNode } from "react";
 import { Pressable, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { Card, Text } from "@/components/ui";
-import { colors } from "@/constants/theme";
+import { LinearGradient } from "expo-linear-gradient";
+import { brandGradient, brandGradientEnd, brandGradientStart, colors } from "@/constants/theme";
 import { formatAED } from "@/lib/format";
 import { deliveryFee, PERSONAL_SHOPPING_FEE } from "@/lib/pricing";
 import { useAppSelector } from "@/store";
@@ -50,7 +51,7 @@ export function useDraftPricing() {
     isShopping,
     delivery,
     shoppingFee,
-    /** Everything Rush charges (delivery + shopping service). */
+    /** Everything Apex Aora charges (delivery + shopping service). */
     serviceFee: delivery + shoppingFee,
     orderValue,
   };
@@ -81,7 +82,7 @@ export function OrderCostSummary({ className = "" }: { className?: string }) {
   );
 }
 
-/** Green pill with a black arrow circle on the left (Personal Shopping "Continue"). */
+/** Violet pill with a black arrow circle on the left (Personal Shopping "Continue"). */
 export function ArrowContinueButton({
   title = "Continue",
   disabled,
@@ -91,7 +92,7 @@ export function ArrowContinueButton({
   title?: string;
   disabled?: boolean;
   onPress: () => void;
-  /** "brand" = green pill + black arrow (shopping form); "dark" = black pill + green arrow (payment success). */
+  /** "brand" = violet pill + black arrow (shopping form); "dark" = black pill + violet arrow (payment success). */
   tone?: "brand" | "dark";
 }) {
   return (
@@ -100,9 +101,25 @@ export function ArrowContinueButton({
       accessibilityState={{ disabled }}
       disabled={disabled}
       onPress={onPress}
-      className={`h-14 flex-row items-center rounded-full ${tone === "dark" ? "bg-ink" : "bg-brand"} p-1 ${disabled ? "opacity-50" : "active:opacity-80"}`}
+      className={`h-14 flex-row items-center overflow-hidden rounded-full ${tone === "dark" ? "bg-ink" : "bg-brand"} p-1 ${disabled ? "opacity-50" : "active:opacity-80"}`}
     >
-      <View className={`h-12 w-12 items-center justify-center rounded-full ${tone === "dark" ? "bg-brand" : "bg-ink"}`}>
+      {tone === "brand" && (
+        <LinearGradient
+          colors={[...brandGradient]}
+          start={brandGradientStart}
+          end={brandGradientEnd}
+          style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0 }}
+        />
+      )}
+      <View className={`h-12 w-12 items-center justify-center overflow-hidden rounded-full ${tone === "dark" ? "bg-brand" : "bg-ink"}`}>
+        {tone === "dark" && (
+          <LinearGradient
+            colors={[...brandGradient]}
+            start={brandGradientStart}
+            end={brandGradientEnd}
+            style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0 }}
+          />
+        )}
         <Ionicons name="arrow-forward" size={20} color={colors.white} />
       </View>
       <Text className="flex-1 pr-12 text-center font-inter-semibold text-base text-white">{title}</Text>

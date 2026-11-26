@@ -5,16 +5,16 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        // Brand greens sampled from the Rush Figma design
+        // APEX AORA brand — sampled from the logo (violet → magenta → blue → cyan)
         brand: {
-          DEFAULT: "#6A9A0A", // primary buttons, active states
-          dark: "#2F5A08", // big headings ("Always in sight.")
-          accent: "#8CC63F", // bright accents, map route
-          light: "#EAF3DA", // selected cards, chips
-          lighter: "#F4F9EC", // header bands, info banners
+          DEFAULT: "#7C3AED", // violet — primary buttons, active states
+          dark: "#3B1A8C", // deep indigo-violet — big headings
+          accent: "#06B6D4", // cyan — bright accents, live dots, map route highlights
+          light: "#EDE9FE", // selected cards, chips
+          lighter: "#F5F3FF", // header bands, info banners
         },
-        surface: "#F8FAF5", // screen background
-        ink: "#111827", // primary text
+        surface: "#FAFAFF", // screen background
+        ink: "#1E1B4B", // primary text (same indigo as the wordmark)
         body: "#4B5563", // secondary text
         muted: "#9CA3AF", // hints, placeholders
         line: "#E5E7EB", // borders

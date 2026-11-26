@@ -11,7 +11,7 @@ const SECTIONS: Section[] = [
   {
     icon: "person-circle-outline",
     title: "Information We Collect",
-    subtitle: "The data we collect and use to provide better service when you use RUSH.",
+    subtitle: "The data we collect and use to provide better service when you use APEX AORA.",
     body:
       "We collect your name, mobile number, email address, saved addresses, pickup and drop-off details, payment " +
       "confirmations and basic device information. Location is collected only while you book or track a delivery.",
@@ -78,11 +78,11 @@ export default function PrivacyScreen() {
       <Header inlineTitle="Privacy Policy" actions />
 
       <View className="items-center px-5 pt-2">
-        {/* TODO: replace with Figma illustration (green shield + document) */}
+        {/* TODO: replace with Figma illustration (violet shield + document) */}
         <IconTile name="shield-checkmark" size={110} iconSize={60} rounded="rounded-full" />
         <Text className="mt-4 font-inter-bold text-2xl text-brand-dark">Privacy Policy</Text>
         <Text className="mt-1 text-center text-sm text-body">
-          Learn how RUSH collects, uses and protects your information.
+          Learn how APEX AORA collects, uses and protects your information.
         </Text>
       </View>
 
@@ -100,7 +100,7 @@ export default function PrivacyScreen() {
         ))}
 
         <InfoBanner icon="shield-checkmark-outline" className="mt-2">
-          By using RUSH, you agree to the terms of this Privacy Policy.
+          By using APEX AORA, you agree to the terms of this Privacy Policy.
         </InfoBanner>
         <Text className="mt-4 text-center text-xs text-muted">Last updated: 1 November 2026</Text>
       </View>

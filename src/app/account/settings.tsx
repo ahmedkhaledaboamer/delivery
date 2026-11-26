@@ -33,7 +33,7 @@ export default function SettingsScreen() {
     <Screen footer={<StaticTabBar active="profile" />}>
       <View className="bg-brand-lighter pb-5">
         <Header actions />
-        <PageTitle title="Settings" subtitle="Your RUSH, your way." />
+        <PageTitle title="Settings" subtitle="Your APEX AORA, your way." />
       </View>
 
       <View className="px-5 pt-3">
@@ -74,7 +74,7 @@ export default function SettingsScreen() {
           trailing={icon("headset-outline")}
           onPress={() => router.push("/account/support")}
         />
-        <ListRow title="About RUSH" trailing={icon("information-circle-outline")} onPress={() => router.push("/account/about")} />
+        <ListRow title="About APEX AORA" trailing={icon("information-circle-outline")} onPress={() => router.push("/account/about")} />
         <ListRow title="Sign out" destructive divider={false} trailing={icon("log-out-outline", colors.danger)} onPress={signOut} />
       </View>
     </Screen>

@@ -31,16 +31,16 @@ function InfoCard({ icon, title, body }: { icon: IconName; title: string; body: 
   );
 }
 
-/** About RUSH — matches design/about-reference.png. */
+/** About APEX AORA — matches design/about-reference.png. */
 export default function AboutScreen() {
   return (
     <Screen>
-      <Header inlineTitle="About RUSH" right={<Logo size="sm" />} />
+      <Header inlineTitle="About APEX AORA" right={<Logo size="sm" />} />
 
       {/* Hero */}
       <View className="mt-2 flex-row items-center px-5">
         <View className="flex-1 pr-2">
-          <Text className="font-inter-bold text-[32px] text-ink">About RUSH</Text>
+          <Text className="font-inter-bold text-[32px] text-ink">About APEX AORA</Text>
           <Text className="mt-2 text-sm leading-6 text-body">A fast, reliable and convenient delivery service across the UAE.</Text>
           <View className="mt-3 h-1.5 w-14 rounded-full bg-brand" />
         </View>
@@ -73,7 +73,7 @@ export default function AboutScreen() {
         <Image source={images.trophy} resizeMode="contain" style={{ width: 110, height: 90 }} />
         <View className="mx-3 h-20 w-px bg-brand-light" />
         <View className="flex-1">
-          <Text className="mb-2 font-inter-bold text-base">Why Choose RUSH?</Text>
+          <Text className="mb-2 font-inter-bold text-base">Why Choose APEX AORA?</Text>
           {WHY.map((w) => (
             <View key={w} className="mb-1.5 flex-row items-center gap-2">
               <View className="h-5 w-5 items-center justify-center rounded-full bg-brand-light">
@@ -85,7 +85,7 @@ export default function AboutScreen() {
         </View>
       </View>
 
-      {/* Green city skyline. TODO: replace with the Figma skyline image when exported. */}
+      {/* Violet city skyline. TODO: replace with the Figma skyline image when exported. */}
       <LinearGradient colors={[colors.surface, colors.brandLighter]} style={{ marginTop: 28, height: 120, justifyContent: "flex-end" }}>
         <View className="flex-row items-end justify-center gap-1 px-5">
           {[30, 46, 38, 64, 52, 110, 58, 44, 70, 36, 28].map((h, i) => (

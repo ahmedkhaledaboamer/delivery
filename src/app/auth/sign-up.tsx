@@ -48,7 +48,7 @@ export default function SignUp() {
     >
       <AuthHeader
         title="Let's get you moving"
-        subtitle="Create your RUSH account in a few simple steps."
+        subtitle="Create your APEX AORA account in a few simple steps."
         onBack={() => (router.canGoBack() ? router.back() : router.replace("/auth/sign-in"))}
       />
       <View className="px-5 pt-5">

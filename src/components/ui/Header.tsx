@@ -9,11 +9,11 @@ type Props = {
   /** Hide the back arrow (e.g. tab roots). */
   hideBack?: boolean;
   onBack?: () => void;
-  /** Title next to the back arrow (e.g. "About RUSH", "Help & Support"). */
+  /** Title next to the back arrow (e.g. "About APEX AORA", "Help & Support"). */
   inlineTitle?: string;
   /** Show the support + notifications buttons on the right (most inner screens). */
   actions?: boolean;
-  /** Show the small R logo on the right (auth screens). */
+  /** Show the small scooter logo mark on the right (auth screens). */
   logo?: boolean;
   right?: ReactNode;
   className?: string;
@@ -47,7 +47,7 @@ export function Header({ hideBack, onBack, inlineTitle, actions, logo, right, cl
   );
 }
 
-/** Big heading block under the header: optional green eyebrow, title, subtitle. */
+/** Big heading block under the header: optional violet eyebrow, title, subtitle. */
 export function PageTitle({
   eyebrow,
   title,

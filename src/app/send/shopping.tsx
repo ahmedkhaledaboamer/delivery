@@ -53,7 +53,7 @@ export default function ShoppingScreen() {
       edges={["bottom"]}
       footer={<ArrowContinueButton disabled={!canContinue} onPress={() => router.push("/send/pickup")} />}
     >
-      {/* Curved green header band with the shopping-bag banner from the design. */}
+      {/* Curved violet header band with the shopping-bag banner from the design. */}
       <LinearGradient
         colors={[colors.brandLight, colors.brandLighter]}
         style={{ borderBottomLeftRadius: 40, borderBottomRightRadius: 40, paddingTop: insets.top, overflow: "hidden" }}

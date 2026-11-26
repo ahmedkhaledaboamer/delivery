@@ -31,7 +31,7 @@ const db: {
   orders: [
     {
       id: "10428",
-      code: "#RSH-10428",
+      code: "#APX-10428",
       flow: "send",
       status: "rider-assigned",
       createdAt: minutesAgo(20),
@@ -73,7 +73,7 @@ const db: {
     },
     {
       id: "10431",
-      code: "#RSH-10431",
+      code: "#APX-10431",
       flow: "send",
       status: "scheduled",
       createdAt: minutesAgo(60),
@@ -101,7 +101,7 @@ const db: {
     },
     {
       id: "10390",
-      code: "#RSH-10390",
+      code: "#APX-10390",
       flow: "send",
       status: "delivered",
       createdAt: minutesAgo(60 * 26),
@@ -158,7 +158,7 @@ const db: {
     {
       id: "n2",
       title: "Your delivery is confirmed",
-      body: "#RSH-10428 · We're finding a nearby rider.",
+      body: "#APX-10428 · We're finding a nearby rider.",
       createdAt: minutesAgo(5),
       read: false,
       kind: "confirmed",
@@ -166,14 +166,14 @@ const db: {
     {
       id: "n3",
       title: "Delivered, safe and sound",
-      body: "#RSH-10390 was handed over at reception.",
+      body: "#APX-10390 was handed over at reception.",
       createdAt: minutesAgo(60 * 24),
       read: true,
       kind: "delivered",
     },
     {
       id: "n4",
-      title: "Welcome to RUSH",
+      title: "Welcome to APEX AORA",
       body: "Your account is ready. Save an address for faster booking.",
       createdAt: minutesAgo(60 * 26),
       read: true,
@@ -245,7 +245,7 @@ export const mockApi = {
     const hhmm = `${String(t.getHours()).padStart(2, "0")}:${String(t.getMinutes()).padStart(2, "0")}`;
     const order: Order = {
       id,
-      code: `#RSH-${id}`,
+      code: `#APX-${id}`,
       flow: input.flow,
       status: "finding-rider",
       createdAt: t.toISOString(),

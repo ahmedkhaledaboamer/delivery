@@ -21,7 +21,7 @@ export default function PickupDropoff() {
         </Text>
         <PickupDropoffVisual />
         <Text className="mt-6 text-sm leading-6 text-body">
-          Set your pickup and dropoff. Add your parcel. A RUSH rider handles the distance.
+          Set your pickup and dropoff. Add your parcel. A APEX AORA rider handles the distance.
         </Text>
         <View className="mt-6">
           <PageDashes active={0} />

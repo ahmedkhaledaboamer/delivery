@@ -4,7 +4,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { Text } from "./Text";
 import { colors } from "@/constants/theme";
 
-/** Light green note with an info icon ("Never share your verification code...", "Simple booking. Live updates..."). */
+/** Light violet note with an info icon ("Never share your verification code...", "Simple booking. Live updates..."). */
 export function InfoBanner({
   children,
   icon = "information-circle-outline",

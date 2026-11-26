@@ -3,7 +3,7 @@ import { Animated, Image, Pressable, ScrollView, View } from "react-native";
 import { router } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
-import { Button, IconButton, Logo, TAB_BAR_SPACE, Text } from "@/components/ui";
+import { Button, GradientText, IconButton, Logo, TAB_BAR_SPACE, Text } from "@/components/ui";
 import { useAppSelector } from "@/store";
 import { colors } from "@/constants/theme";
 import { images } from "@/constants/images";
@@ -116,7 +116,7 @@ export default function Home() {
 
           <View className="px-5 pb-8 pt-10">
             <Text className="font-inter-bold text-[34px] leading-[40px]">Fast, Safe.</Text>
-            <Text className="font-inter-bold text-[34px] leading-[40px] text-brand">Anywhere</Text>
+            <GradientText className="font-inter-bold text-[34px] leading-[40px]">Anywhere</GradientText>
           </View>
 
           <View className="px-5">

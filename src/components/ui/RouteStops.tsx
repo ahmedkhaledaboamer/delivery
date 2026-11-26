@@ -3,7 +3,7 @@ import { Text } from "./Text";
 
 type Stop = { label: string; address: string; detail?: string; onEdit?: () => void };
 
-/** Vertical PICKUP → DROP-OFF list with green dots and optional "Edit" links. */
+/** Vertical PICKUP → DROP-OFF list with violet dots and optional "Edit" links. */
 export function RouteStops({ stops, className = "" }: { stops: Stop[]; className?: string }) {
   return (
     <View className={className}>

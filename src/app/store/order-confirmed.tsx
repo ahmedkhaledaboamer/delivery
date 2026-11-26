@@ -4,7 +4,7 @@ import { router } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { Button, Card, IconButton, Screen, Text } from "@/components/ui";
+import { Button, Card, GradientText, IconButton, Screen, Text } from "@/components/ui";
 import { OffersRewards, TermsAgreement, useDraftDiscount } from "@/components/delivery";
 import { useStorePickup } from "@/components/store/useStorePickup";
 import { useCreateOrder } from "@/api/hooks";
@@ -68,11 +68,12 @@ export default function StoreOrderConfirmed() {
         </View>
         <View className="mt-2 items-center">
           <Image source={images.storeConfirmed} resizeMode="contain" style={{ width: 190, height: 190 }} />
-          <Text className="mt-4 font-inter-bold text-3xl">
-            Order <Text className="font-inter-bold text-3xl text-brand">Confirmed</Text>
-          </Text>
+          <View className="mt-4 flex-row items-center">
+            <Text className="font-inter-bold text-3xl">Order </Text>
+            <GradientText className="font-inter-bold text-3xl">Confirmed</GradientText>
+          </View>
           <Text className="mt-2 px-10 text-center text-sm text-body">
-            Your delivery request has been successfully submitted. Sit back and let RUSH handle the deliveries.
+            Your delivery request has been successfully submitted. Sit back and let APEX AORA handle the deliveries.
           </Text>
         </View>
       </LinearGradient>

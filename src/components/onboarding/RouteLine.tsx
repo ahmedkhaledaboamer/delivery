@@ -14,7 +14,7 @@ export function PinShape({ x, y, size = 1, color = colors.brandAccent }: { x: nu
 }
 
 /**
- * Decorative "pin → pin" route: a wavy green line between two map pins
+ * Decorative "pin → pin" route: a wavy violet line between two map pins
  * (splash bottom, Home bottom). Draws at the measured width.
  * TODO: replace with Figma illustration
  */

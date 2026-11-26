@@ -43,7 +43,7 @@ export function StatusPill({ status }: { status: OrderStatus }) {
   );
 }
 
-/** Vertical status steps: green check for done steps, grey dot + "Pending" otherwise. */
+/** Vertical status steps: violet check for done steps, grey dot + "Pending" otherwise. */
 export function OrderTimeline({ steps, className = "" }: { steps: TimelineStep[]; className?: string }) {
   return (
     <View className={`gap-2 ${className}`}>

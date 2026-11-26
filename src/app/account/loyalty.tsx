@@ -46,7 +46,7 @@ export default function LoyaltyScreen() {
         {d && (
           <View className="px-5 pt-2">
             <ImageBackground
-              source={images.greenWaveBg}
+              source={images.brandWaveBg}
               resizeMode="cover"
               imageStyle={{ borderRadius: 20 }}
               style={{ borderRadius: 20, paddingLeft: 20, paddingVertical: 8, flexDirection: "row", alignItems: "center" }}

@@ -3,7 +3,7 @@ import { Pressable, View, ViewProps } from "react-native";
 
 type Props = ViewProps & {
   children: ReactNode;
-  /** "white" (default) or "tint" (light green band like the fee / info blocks). */
+  /** "white" (default) or "tint" (light violet band like the fee / info blocks). */
   tone?: "white" | "tint";
   onPress?: () => void;
   className?: string;

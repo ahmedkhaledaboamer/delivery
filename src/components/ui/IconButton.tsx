@@ -6,7 +6,7 @@ type Props = PressableProps & {
   name: keyof typeof Ionicons.glyphMap;
   size?: number;
   color?: string;
-  badge?: boolean; // small green dot (notifications)
+  badge?: boolean; // small violet dot (notifications)
   className?: string;
 };
 

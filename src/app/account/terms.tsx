@@ -6,7 +6,7 @@ const SECTIONS: { title: string; body: string }[] = [
   {
     title: "Responsibility for Shipments",
     body:
-      "RUSH acts as an intermediary between customers and delivery drivers. We are not responsible for the contents of " +
+      "APEX AORA acts as an intermediary between customers and delivery drivers. We are not responsible for the contents of " +
       "packages sent through our platform.",
   },
   {
@@ -22,7 +22,7 @@ const SECTIONS: { title: string; body: string }[] = [
   {
     title: "Loss or Damage",
     body:
-      "RUSH shall not be held liable for loss, damage, theft, leakage, or any consequences arising from the contents of a " +
+      "APEX AORA shall not be held liable for loss, damage, theft, leakage, or any consequences arising from the contents of a " +
       "shipment, improper packaging, or inaccurate information provided by the sender.",
   },
   {
@@ -51,7 +51,7 @@ export default function TermsScreen() {
 
         <Text className="mt-5 font-inter-semibold text-sm text-brand">Important Notice</Text>
         <Text className="mt-1 text-sm leading-6 text-body">
-          By using RUSH delivery services, you acknowledge and agree to the following terms:
+          By using APEX AORA delivery services, you acknowledge and agree to the following terms:
         </Text>
 
         {SECTIONS.map((s, i) => (
@@ -64,7 +64,7 @@ export default function TermsScreen() {
         ))}
 
         <View className="mt-8 border-t border-line pt-5">
-          <Text className="font-inter-bold text-sm">RUSH Delivery Services</Text>
+          <Text className="font-inter-bold text-sm">APEX AORA Delivery Services</Text>
           <Text className="mt-1 text-sm text-body">Delivering with care, moving with trust.</Text>
         </View>
       </View>
