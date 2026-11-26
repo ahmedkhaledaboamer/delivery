@@ -1,6 +1,6 @@
 # Rush app — build brief (shared by all screen builders)
 
-Project: `e:\ahmed\delivary` — Expo SDK 58 + Expo Router (routes in `src/app/`), NativeWind v4 (Tailwind 3 classes via `className`),
+Project: `e:\ahmed\ry` — Expo SDK 58 + Expo Router (routes in `src/app/`), NativeWind v4 (Tailwind 3 classes via `className`),
 Redux Toolkit (client/flow state), TanStack Query (server state, currently a fake in-memory backend). TypeScript strict. `@/` = `src/`.
 Windows machine: prefer the Write/Edit tools for files (bash heredocs with many files have failed here).
 

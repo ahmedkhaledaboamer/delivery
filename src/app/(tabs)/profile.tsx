@@ -10,6 +10,7 @@ import { useAppDispatch, useAppSelector } from "@/store";
 import { updateUser } from "@/store/slices/authSlice";
 import { maskPhone } from "@/lib/format";
 import { colors } from "@/constants/theme";
+import { useT } from "@/i18n";
 
 const ADDRESS_ICON: Record<Address["icon"], keyof typeof Ionicons.glyphMap> = {
   home: "home-outline",
@@ -18,31 +19,33 @@ const ADDRESS_ICON: Record<Address["icon"], keyof typeof Ionicons.glyphMap> = {
 };
 
 function GuestCard() {
+  const t = useT();
   return (
     <Card className="mx-5 mt-6 items-center py-8">
       <IconTile name="person-outline" size={56} iconSize={26} rounded="rounded-full" />
-      <Text className="mt-4 font-inter-semibold text-base">You're browsing as a guest</Text>
+      <Text className="mt-4 font-inter-semibold text-base">{t("account.guestTitle")}</Text>
       <Text className="mt-1 px-4 text-center text-sm text-body">
-        Sign in to save addresses, track your deliveries and manage your account.
+        {t("account.guestBody")}
       </Text>
-      <Button title="Sign in" className="mt-5 w-full" onPress={() => router.replace("/auth/sign-in")} />
-      <Button title="Create an account" variant="ghost" className="mt-1 w-full" onPress={() => router.replace("/auth/sign-up")} />
+      <Button title={t("account.signIn")} className="mt-5 w-full" onPress={() => router.replace("/auth/sign-in")} />
+      <Button title={t("account.createAccount")} variant="ghost" className="mt-1 w-full" onPress={() => router.replace("/auth/sign-up")} />
     </Card>
   );
 }
 
 function AddAddressForm({ onAdd, onCancel }: { onAdd: (a: Address) => void; onCancel: () => void }) {
+  const t = useT();
   const [label, setLabel] = useState("");
   const [address, setAddress] = useState("");
   const valid = label.trim().length > 0 && address.trim().length > 4;
   return (
     <Card tone="tint" className="mt-3">
-      <TextField label="Label" placeholder="e.g. Home, Gym, Mum's place" value={label} onChangeText={setLabel} />
-      <TextField label="Address" placeholder="Street, area, city" value={address} onChangeText={setAddress} />
+      <TextField label={t("account.addressLabel")} placeholder={t("account.addressLabelPlaceholder")} value={label} onChangeText={setLabel} />
+      <TextField label={t("account.address")} placeholder={t("account.addressPlaceholder")} value={address} onChangeText={setAddress} />
       <View className="flex-row gap-3">
-        <Button title="Cancel" variant="outline" size="sm" className="flex-1" onPress={onCancel} />
+        <Button title={t("common.cancel")} variant="outline" size="sm" className="flex-1" onPress={onCancel} />
         <Button
-          title="Save address"
+          title={t("account.saveAddress")}
           size="sm"
           className="flex-1"
           disabled={!valid}
@@ -62,6 +65,7 @@ function AddAddressForm({ onAdd, onCancel }: { onAdd: (a: Address) => void; onCa
 }
 
 export default function ProfileScreen() {
+  const t = useT();
   const isGuest = useAppSelector((s) => s.auth.isGuest);
   const user = useAppSelector((s) => s.auth.user);
   const profile = useProfile();
@@ -84,15 +88,15 @@ export default function ProfileScreen() {
       () => {
         dispatch(updateUser({ avatar: uri }));
       },
-      () => Alert.alert("Couldn't update photo", "Please try again."),
+      () => Alert.alert(t("account.photoUpdateFailed"), t("account.tryAgain")),
     );
 
   return (
     <Screen edges={[]} background="white">
       <View style={{ paddingBottom: TAB_BAR_SPACE }}>
         <AccountHeader
-          title="My profile"
-          subtitle="The details that keep you moving."
+          title={t("account.profileTitle")}
+          subtitle={t("account.profileSubtitle")}
           onBack={() => router.navigate("/(tabs)")}
         />
 
@@ -105,14 +109,16 @@ export default function ProfileScreen() {
                 <AvatarPicker name={name} uri={avatar} size={64} onChange={changePhoto} busy={updateProfile.isPending} />
                 <View className="flex-1">
                   <Text className="font-inter-semibold text-base">{name}</Text>
-                  <Text className="mt-1 text-xs text-muted">{maskPhone(phone)}</Text>
+                  <View className="self-start" style={{ direction: "ltr" }}>
+                    <Text className="mt-1 text-xs text-muted">{maskPhone(phone)}</Text>
+                  </View>
                   <Pressable hitSlop={8} onPress={() => router.push("/account/edit-profile")}>
-                    <Text className="mt-1.5 font-inter-medium text-xs text-brand">Edit profile</Text>
+                    <Text className="mt-1.5 font-inter-medium text-xs text-brand">{t("account.editProfile")}</Text>
                   </Pressable>
                 </View>
               </View>
 
-              <Text className="mt-4 font-inter-semibold text-sm">Saved addresses</Text>
+              <Text className="mt-4 font-inter-semibold text-sm">{t("account.savedAddresses")}</Text>
               {addresses.map((a) => (
                 <ListRow
                   key={a.id}
@@ -131,24 +137,24 @@ export default function ProfileScreen() {
                   }}
                 />
               ) : (
-                <ListRow title="Add a new address" trailing={<RowIcon name="add" />} onPress={() => setAdding(true)} />
+                <ListRow title={t("account.addAddress")} trailing={<RowIcon name="add" />} onPress={() => setAdding(true)} />
               )}
 
-              <Text className="mt-4 font-inter-semibold text-sm">Here to help</Text>
+              <Text className="mt-4 font-inter-semibold text-sm">{t("account.hereToHelp")}</Text>
               <ListRow
-                title="Help & support"
-                subtitle="Delivery questions? Talk to us."
+                title={t("account.helpSupport")}
+                subtitle={t("account.helpSupportSub")}
                 trailing={<RowIcon name="headset-outline" />}
                 onPress={() => router.push("/account/support")}
               />
               <ListRow
-                title="Settings"
-                subtitle="Language, notifications and security"
+                title={t("account.settings")}
+                subtitle={t("account.settingsSub")}
                 trailing={<RowIcon name="options-outline" />}
                 onPress={() => router.push("/account/settings")}
               />
 
-              <InfoBanner className="mt-4">Delivering across Colombo, Sri Lanka.</InfoBanner>
+              <InfoBanner className="mt-4">{t("account.deliveringAcross")}</InfoBanner>
             </View>
           </QueryState>
         )}

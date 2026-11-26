@@ -3,12 +3,14 @@ import { AccountHeader } from "@/components/account";
 import { router, useLocalSearchParams } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { Button, Card, Header, InfoBanner, RouteStops, Screen, Text } from "@/components/ui";
-import { canCancel, flowLabel, isActive, packageLine, QueryState, shortDay, statusSummary } from "@/components/orders/status";
+import { canCancel, flowLabel, isActive, ltrText, packageLine, QueryState, shortDay, statusSummary } from "@/components/orders/status";
 import { useOrder } from "@/api/hooks";
 import { colors } from "@/constants/theme";
 import { formatAED, formatTime } from "@/lib/format";
+import { useT } from "@/i18n";
 
 export default function OrderDetails() {
+  const t = useT();
   const { id } = useLocalSearchParams<{ id: string }>();
   const { data: order, isLoading, error, refetch } = useOrder(id);
 
@@ -31,15 +33,15 @@ export default function OrderDetails() {
       background="white"
       footer={
         trackable ? (
-          <Button title="Track delivery" onPress={() => router.push(`/orders/${order.id}/track`)} />
+          <Button title={t("orders.trackDelivery")} onPress={() => router.push(`/orders/${order.id}/track`)} />
         ) : order.status === "delivered" ? (
-          <Button title="View delivery summary" onPress={() => router.push(`/orders/${order.id}/delivered`)} />
+          <Button title={t("orders.viewDeliverySummary")} onPress={() => router.push(`/orders/${order.id}/delivered`)} />
         ) : undefined
       }
     >
       <AccountHeader
-        eyebrow={order.code}
-        title="Order details"
+        eyebrow={ltrText(order.code)}
+        title={t("orders.orderDetails")}
         subtitle={`${shortDay(order.createdAt)} · ${formatTime(order.createdAt)} · ${flowLabel(order)}`}
       />
       <View className="px-5">
@@ -55,9 +57,9 @@ export default function OrderDetails() {
         <Card className="mt-4">
           <RouteStops
             stops={[
-              { label: "Pickup", address: order.pickup.address, detail: order.pickup.contactName },
+              { label: t("common.pickup"), address: order.pickup.address, detail: order.pickup.contactName },
               ...order.dropoffs.map((d, i) => ({
-                label: order.dropoffs.length > 1 ? `Drop-off ${i + 1}` : "Drop-off",
+                label: order.dropoffs.length > 1 ? t("orders.dropoffN", { n: i + 1 }) : t("orders.dropoff"),
                 address: d.address,
                 detail: d.contactName,
               })),
@@ -69,22 +71,22 @@ export default function OrderDetails() {
           <Text className="font-inter-semibold text-sm">{packageLine(order)}</Text>
           {!!notes && <Text className="mt-1 text-xs text-body">{notes}</Text>}
           <Text className="mt-1 text-xs text-muted">
-            {order.distanceKm} km · Delivery {order.etaMinutes[0]}–{order.etaMinutes[1]} min after pickup.
+            {t("orders.distanceEta", { km: order.distanceKm, min: order.etaMinutes[0], max: order.etaMinutes[1] })}
           </Text>
         </View>
 
         <Card tone="tint" className="mt-4">
           <View className="flex-row items-center justify-between">
             <View>
-              <Text className="font-inter-semibold text-sm">Delivery fee</Text>
+              <Text className="font-inter-semibold text-sm">{t("orders.deliveryFee")}</Text>
               <Text className="mt-0.5 text-[11px] text-muted">
-                {order.paymentMethod === "cash" ? "Cash from receiver at drop-off" : "Paid by card"}
+                {order.paymentMethod === "cash" ? t("orders.cashAtDropoff") : t("orders.paidByCard")}
               </Text>
             </View>
             <Text className="font-inter-bold text-lg text-brand-dark">{formatAED(order.total || order.fee)}</Text>
           </View>
         </Card>
-        <Text className="mt-2 text-[11px] text-muted">Delivery fee only. Nothing collected for package contents.</Text>
+        <Text className="mt-2 text-[11px] text-muted">{t("orders.feeOnlyNote")}</Text>
 
         {cancellable && (
           <Pressable
@@ -93,8 +95,8 @@ export default function OrderDetails() {
             className="mt-5 flex-row items-center border-t border-line pt-4 active:opacity-70"
           >
             <View className="flex-1">
-              <Text className="font-inter-semibold text-sm">Cancel order</Text>
-              <Text className="mt-0.5 text-xs text-muted">Free before a rider is assigned</Text>
+              <Text className="font-inter-semibold text-sm">{t("orders.cancelOrder")}</Text>
+              <Text className="mt-0.5 text-xs text-muted">{t("orders.cancelFreeHint")}</Text>
             </View>
             <Ionicons name="close-circle-outline" size={20} color={colors.body} />
           </Pressable>

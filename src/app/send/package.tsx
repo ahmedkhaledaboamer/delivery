@@ -6,6 +6,7 @@ import { Button, Screen, Text, TextField } from "@/components/ui";
 import { TermsAgreement } from "@/components/delivery";
 import { FlowHeader, FlowSheet, PREFERENCES } from "@/components/send";
 import { brandGradient, colors } from "@/constants/theme";
+import { useT } from "@/i18n";
 import { useAppDispatch, useAppSelector } from "@/store";
 import {
   setDeliveryNotes,
@@ -16,6 +17,7 @@ import {
 
 /** Package and notes (4 of 7). Contents are hidden for personal shopping (7.png). */
 export default function PackageScreen() {
+  const t = useT();
   const dispatch = useAppDispatch();
   const { flow, packageContents, preferences, deliveryNotes, agreedToTerms } = useAppSelector((s) => s.delivery);
   const isShopping = flow === "shopping";
@@ -25,23 +27,23 @@ export default function PackageScreen() {
     <Screen
       edges={["bottom"]}
       background="white"
-      footer={<Button title="Continue" disabled={!canContinue} onPress={() => router.push("/send/review")} />}
+      footer={<Button title={t("common.continue")} disabled={!canContinue} onPress={() => router.push("/send/review")} />}
     >
-      <FlowHeader step="4 of 7 · Package" title="What are you sending?" subtitle="A few details help us handle it with care." />
+      <FlowHeader step={t("send.stepPackage")} title={t("send.packageTitle")} subtitle={t("send.packageSub")} />
       <FlowSheet>
         <View>
           {!isShopping && (
             <TextField
-              label="What's inside?"
+              label={t("send.whatsInside")}
               hint="required"
               value={packageContents}
-              onChangeText={(t) => dispatch(setPackageContents(t))}
-              placeholder="e.g. Books, documents, clothes"
+              onChangeText={(v) => dispatch(setPackageContents(v))}
+              placeholder={t("send.whatsInsidePlaceholder")}
             />
           )}
 
           <Text className="mb-2 font-inter-medium text-sm">
-            Delivery Preference <Text className="text-xs text-muted">· Optional</Text>
+            {t("send.deliveryPreference")} <Text className="text-xs text-muted">{t("send.optionalDot")}</Text>
           </Text>
           <View className="mb-5 flex-row gap-2">
             {PREFERENCES.map((p) => {
@@ -50,6 +52,7 @@ export default function PackageScreen() {
                 <Pressable
                   key={p.value}
                   accessibilityRole="checkbox"
+                  accessibilityLabel={t(p.labelKey)}
                   accessibilityState={{ checked: active }}
                   onPress={() => dispatch(togglePreference(p.value))}
                   className={`aspect-square flex-1 items-center justify-center overflow-hidden rounded-xl border px-1 ${
@@ -68,7 +71,7 @@ export default function PackageScreen() {
                   <Text
                     className={`mt-1 text-center text-[10px] leading-3 ${active ? "font-inter-semibold text-white" : "text-ink"}`}
                   >
-                    {p.label}
+                    {t(p.labelKey)}
                   </Text>
                 </Pressable>
               );
@@ -76,17 +79,17 @@ export default function PackageScreen() {
           </View>
 
           <TextField
-            label="Delivery notes"
+            label={t("send.deliveryNotes")}
             hint="optional"
             showCounter
             maxLength={200}
             multiline
             value={deliveryNotes}
-            onChangeText={(t) => dispatch(setDeliveryNotes(t))}
-            placeholder="Call on arrival. Hand over at reception."
+            onChangeText={(v) => dispatch(setDeliveryNotes(v))}
+            placeholder={t("send.deliveryNotesPlaceholder")}
           />
 
-          <Text className="mb-5 text-xs text-muted">Please seal your package before pickup.</Text>
+          <Text className="mb-5 text-xs text-muted">{t("send.sealPackage")}</Text>
           <View className="mb-4 rounded-xl border border-brand-light bg-brand-lighter p-4">
             <TermsAgreement />
           </View>

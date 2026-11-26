@@ -2,6 +2,7 @@ import { ReactNode } from "react";
 import { Pressable, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { Text } from "./Text";
+import { DirIcon } from "./DirIcon";
 import { colors } from "@/constants/theme";
 
 /** Round radio dot (empty grey ring / filled violet). */
@@ -147,7 +148,7 @@ export function SegmentedTabs<T extends string>({
             onPress={() => onChange(o.value)}
             className={`h-11 flex-1 flex-row items-center justify-center gap-2 rounded-full ${active ? activeCls : ""}`}
           >
-            {o.icon && <Ionicons name={o.icon} size={18} color={color} />}
+            {o.icon && <DirIcon name={o.icon} size={18} color={color} />}
             <Text className="font-inter-medium text-sm" style={{ color }}>
               {o.label}
             </Text>

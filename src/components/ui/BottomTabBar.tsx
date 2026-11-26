@@ -1,9 +1,10 @@
-import type { ComponentProps } from "react";
+import type { ComponentProps, ReactNode } from "react";
 import { Pressable, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { router, type Href, type Tabs } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Text } from "./Text";
+import { useT } from "@/i18n";
 import { colors } from "@/constants/theme";
 
 type BottomTabBarProps = Parameters<NonNullable<ComponentProps<typeof Tabs>["tabBar"]>>[0];
@@ -16,8 +17,35 @@ const ICONS: Record<string, [keyof typeof Ionicons.glyphMap, keyof typeof Ionico
 
 const shadow = { shadowColor: "#000", shadowOpacity: 0.08, shadowRadius: 12, shadowOffset: { width: 0, height: 4 }, elevation: 6 };
 
-function TabItem({ name, label, focused, onPress }: { name: string; label: string; focused: boolean; onPress: () => void }) {
+const TAB_LABEL_KEY: Record<string, string> = {
+  index: "common.tabHome",
+  orders: "common.tabOrders",
+  profile: "common.tabProfile",
+  jobs: "common.tabJobs",
+  earnings: "common.tabEarnings",
+};
+
+type IconRenderer = (p: { focused: boolean; color: string; size: number }) => ReactNode;
+
+function TabItem({
+  name,
+  label,
+  focused,
+  onPress,
+  renderIcon,
+}: {
+  name: string;
+  label: string;
+  focused: boolean;
+  onPress: () => void;
+  /** Screen's own `tabBarIcon` option, when it sets one (e.g. driver app tabs). */
+  renderIcon?: IconRenderer;
+}) {
+  const t = useT();
+  // A screen that sets its own title keeps it; otherwise use the shared translated label for that route name.
+  if (label === name && TAB_LABEL_KEY[name]) label = t(TAB_LABEL_KEY[name]);
   const [on, off] = ICONS[name] ?? ["ellipse", "ellipse-outline"];
+  const iconColor = focused ? colors.brandDark : colors.body;
   return (
     <Pressable
       accessibilityRole="tab"
@@ -26,7 +54,7 @@ function TabItem({ name, label, focused, onPress }: { name: string; label: strin
       onPress={onPress}
       className={`min-w-[76px] items-center rounded-full px-4 py-2 ${focused ? "bg-brand-light" : ""}`}
     >
-      <Ionicons name={focused ? on : off} size={20} color={focused ? colors.brandDark : colors.body} />
+      {renderIcon ? renderIcon({ focused, color: iconColor, size: 20 }) : <Ionicons name={focused ? on : off} size={20} color={iconColor} />}
       <Text className={`mt-0.5 text-[10px] ${focused ? "font-inter-semibold text-brand-dark" : "text-body"}`}>{label}</Text>
     </Pressable>
   );
@@ -40,12 +68,14 @@ export function BottomTabBar({ state, descriptors, emitter, navigateToTab }: Bot
       <View className="flex-row items-center gap-2 rounded-full border border-line bg-white px-3 py-2" style={shadow}>
         {state.routes.map((route, index) => {
           const focused = state.index === index;
-          const label = (descriptors[route.key].options.title ?? route.name) as string;
+          const { options } = descriptors[route.key];
+          const label = (options.title ?? route.name) as string;
           return (
             <TabItem
               key={route.key}
               name={route.name}
               label={label}
+              renderIcon={options.tabBarIcon as IconRenderer | undefined}
               focused={focused}
               onPress={() => {
                 const event = emitter.emit({ type: "tabPress", target: route.key, canPreventDefault: true });

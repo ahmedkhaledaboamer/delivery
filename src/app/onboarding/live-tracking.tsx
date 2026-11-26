@@ -4,8 +4,10 @@ import { Button, Screen, Text } from "@/components/ui";
 import { LiveTrackingVisual, OnboardingHeader, PageDashes } from "@/components/onboarding";
 import { useAppDispatch } from "@/store";
 import { completeOnboarding } from "@/store/slices/authSlice";
+import { useT } from "@/i18n";
 
 export default function LiveTracking() {
+  const t = useT();
   const dispatch = useAppDispatch();
   const finish = (to: "/auth/sign-in" | "/auth/sign-up") => {
     dispatch(completeOnboarding());
@@ -13,15 +15,15 @@ export default function LiveTracking() {
   };
 
   return (
-    <Screen footer={<Button title="Start sending" onPress={() => finish("/auth/sign-up")} />}>
+    <Screen footer={<Button title={t("onboarding.startSending")} onPress={() => finish("/auth/sign-up")} />}>
       <OnboardingHeader onSkip={() => finish("/auth/sign-in")} />
       <View className="px-5 pt-2">
         <Text className="mb-6 font-inter-semibold text-[11px] uppercase tracking-wide text-brand">
-          A little closer. Every moment.
+          {t("onboarding.trackingEyebrow")}
         </Text>
         <LiveTrackingVisual />
         <Text className="mt-6 text-sm leading-6 text-body">
-          Follow your rider live, see the arrival time, and know when your parcel is delivered.
+          {t("onboarding.trackingBody")}
         </Text>
         <View className="mt-6">
           <PageDashes active={1} />

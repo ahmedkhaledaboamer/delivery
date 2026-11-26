@@ -17,3 +17,4 @@ export { RouteMap } from "./RouteMap";
 export { Sheet } from "./Sheet";
 export { RouteStops } from "./RouteStops";
 export { BottomTabBar, StaticTabBar, TAB_BAR_SPACE } from "./BottomTabBar";
+export { DirIcon, rtlFlip, isDirectionalIcon } from "./DirIcon";

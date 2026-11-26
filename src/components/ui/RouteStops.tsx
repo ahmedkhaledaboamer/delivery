@@ -1,10 +1,12 @@
 import { Pressable, View } from "react-native";
 import { Text } from "./Text";
+import { useT } from "@/i18n";
 
 type Stop = { label: string; address: string; detail?: string; onEdit?: () => void };
 
 /** Vertical PICKUP → DROP-OFF list with violet dots and optional "Edit" links. */
 export function RouteStops({ stops, className = "" }: { stops: Stop[]; className?: string }) {
+  const t = useT();
   return (
     <View className={className}>
       {stops.map((s, i) => (
@@ -20,7 +22,7 @@ export function RouteStops({ stops, className = "" }: { stops: Stop[]; className
           </View>
           {s.onEdit && (
             <Pressable hitSlop={8} onPress={s.onEdit}>
-              <Text className="font-inter-medium text-xs text-brand underline">Edit</Text>
+              <Text className="font-inter-medium text-xs text-brand underline">{t("common.edit")}</Text>
             </Pressable>
           )}
         </View>

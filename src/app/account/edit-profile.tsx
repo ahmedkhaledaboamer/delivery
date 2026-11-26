@@ -6,6 +6,7 @@ import { AccountHeader, AvatarPicker, QueryState } from "@/components/account";
 import { useProfile, useUpdateProfile } from "@/api/hooks";
 import { useAppDispatch } from "@/store";
 import { updateUser } from "@/store/slices/authSlice";
+import { useT } from "@/i18n";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -16,6 +17,7 @@ function splitPhone(phone: string): [string, string] {
 }
 
 export default function EditProfileScreen() {
+  const t = useT();
   const dispatch = useAppDispatch();
   const profile = useProfile();
   const update = useUpdateProfile();
@@ -50,7 +52,7 @@ export default function EditProfileScreen() {
         dispatch(updateUser(patch));
         router.back();
       },
-      onError: (e) => Alert.alert("Couldn't save", e instanceof Error ? e.message : "Please try again."),
+      onError: (e) => Alert.alert(t("account.couldntSave"), e instanceof Error ? e.message : t("account.tryAgain")),
     });
   };
 
@@ -58,42 +60,42 @@ export default function EditProfileScreen() {
     <Screen
       edges={["bottom"]}
       background="white"
-      footer={<Button title="Save changes" disabled={!canSave} loading={update.isPending} onPress={save} />}
+      footer={<Button title={t("account.saveChanges")} disabled={!canSave} loading={update.isPending} onPress={save} />}
     >
-      <AccountHeader title="Edit profile" subtitle="Keep your contact details up to date." />
+      <AccountHeader title={t("account.editProfile")} subtitle={t("account.editProfileSubtitle")} />
 
       <QueryState isLoading={profile.isLoading} error={profile.error}>
         <View className="px-5 pt-6">
           <View className="mb-6 flex-row items-center gap-4">
             <AvatarPicker name={name} uri={avatar} size={64} onChange={setAvatar} />
-            <Text className="font-inter-medium text-sm text-brand">Change photo</Text>
+            <Text className="font-inter-medium text-sm text-brand">{t("account.changePhoto")}</Text>
           </View>
 
           <TextField
-            label="Full name"
+            label={t("common.fullName")}
             value={name}
             onChangeText={setName}
             autoCapitalize="words"
-            error={name.length > 0 && !nameValid ? "Enter your full name" : undefined}
+            error={name.length > 0 && !nameValid ? t("account.enterFullName") : undefined}
           />
           <TextField
-            label="Email address"
+            label={t("account.emailAddress")}
             value={email}
             onChangeText={setEmail}
             keyboardType="email-address"
             autoCapitalize="none"
             autoCorrect={false}
-            error={email.length > 0 && !emailValid ? "Enter a valid email address" : undefined}
+            error={email.length > 0 && !emailValid ? t("account.enterValidEmail") : undefined}
           />
           <PhoneField
-            label="Mobile number · Sri Lanka"
+            label={t("account.mobileSriLanka")}
             countryCode={countryCode}
             value={phone}
             onChangeText={setPhone}
-            error={phone.length > 0 && !phoneValid ? "Enter a valid mobile number" : undefined}
+            error={phone.length > 0 && !phoneValid ? t("account.enterValidMobile") : undefined}
           />
           <InfoBanner>
-            Changing your mobile number requires SMS verification. Existing orders keep their original contact details.
+            {t("account.changeMobileNote")}
           </InfoBanner>
         </View>
       </QueryState>

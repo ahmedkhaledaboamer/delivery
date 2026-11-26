@@ -7,6 +7,9 @@ import { AuthHeader } from "@/components/auth";
 import { useSendOtp, useVerifyOtp } from "@/api/hooks";
 import { useAppDispatch, useAppSelector } from "@/store";
 import { setCredentials } from "@/store/slices/authSlice";
+import { setVehicleDetails } from "@/store/slices/driverSlice";
+import type { Vehicle } from "@/store/slices/deliverySlice";
+import { useT } from "@/i18n";
 import { maskPhone } from "@/lib/format";
 import { colors } from "@/constants/theme";
 
@@ -15,8 +18,14 @@ const RESEND_SECONDS = 30;
 const goBack = () => (router.canGoBack() ? router.back() : router.replace("/auth/sign-in"));
 
 export default function Verify() {
+  const t = useT();
   const dispatch = useAppDispatch();
-  const { storeName } = useLocalSearchParams<{ storeName?: string }>();
+  const { storeName, name, vehicle, plate } = useLocalSearchParams<{
+    storeName?: string;
+    name?: string;
+    vehicle?: Vehicle;
+    plate?: string;
+  }>();
   const { pendingPhone, role } = useAppSelector((s) => s.auth);
   const [code, setCode] = useState("");
   const [seconds, setSeconds] = useState(RESEND_SECONDS);
@@ -25,8 +34,8 @@ export default function Verify() {
 
   useEffect(() => {
     if (seconds <= 0) return;
-    const t = setTimeout(() => setSeconds((s) => s - 1), 1000);
-    return () => clearTimeout(t);
+    const id = setTimeout(() => setSeconds((s) => s - 1), 1000);
+    return () => clearTimeout(id);
   }, [seconds]);
 
   const canResend = seconds <= 0 && !resend.isPending && !!pendingPhone;
@@ -53,7 +62,7 @@ export default function Verify() {
               token,
               user: {
                 id: profile.id,
-                name: profile.name,
+                name: role === "driver" && name ? name : profile.name,
                 email: profile.email,
                 avatar: profile.avatar,
                 phone,
@@ -62,7 +71,14 @@ export default function Verify() {
               },
             }),
           );
-          router.replace("/(tabs)");
+          if (role === "driver") {
+            if (vehicle || plate) {
+              dispatch(setVehicleDetails({ vehicle: vehicle === "car" ? "car" : "motorcycle", plate: plate ?? "" }));
+            }
+            router.replace("/driver");
+          } else {
+            router.replace("/(tabs)");
+          }
         },
       },
     );
@@ -76,38 +92,48 @@ export default function Verify() {
       background="white"
       footer={
         <Button
-          title="Verify number"
+          title={t("auth.verifyNumber")}
           disabled={code.length !== 6 || !pendingPhone}
           loading={verify.isPending}
           onPress={onVerify}
         />
       }
     >
-      <AuthHeader title="Verify your number" subtitle="Enter the 6-digit code we sent by SMS." onBack={goBack} />
+      <AuthHeader title={t("auth.verifyTitle")} subtitle={t("auth.verifySubtitle")} onBack={goBack} />
       <View className="px-5 pt-6">
         <View className="mb-4 flex-row items-center justify-between">
-          <Text className="font-inter-semibold text-sm">{pendingPhone ? maskPhone(pendingPhone) : "No number entered"}</Text>
+          <View style={pendingPhone ? { direction: "ltr" } : undefined}>
+            <Text className="font-inter-semibold text-sm">{pendingPhone ? maskPhone(pendingPhone) : t("auth.noNumber")}</Text>
+          </View>
           <Pressable accessibilityRole="button" hitSlop={8} onPress={goBack}>
-            <Text className="font-inter-medium text-xs text-brand">Change</Text>
+            <Text className="font-inter-medium text-xs text-brand">{t("auth.change")}</Text>
           </Pressable>
         </View>
 
         <OtpInput value={code} onChange={setCode} />
-        <Text className="mt-3 text-xs text-muted">The code is valid for 5 minutes.</Text>
+        <Text className="mt-3 text-xs text-muted">{t("auth.codeValid")}</Text>
 
-        {verify.isError && <Text className="mt-2 text-xs text-danger">{verify.error.message}</Text>}
+        {verify.isError && (
+          <Text className="mt-2 text-xs text-danger">
+            {verify.error.message === "Enter the 6-digit code" ? t("auth.enterCode") : verify.error.message}
+          </Text>
+        )}
         {resend.isError && <Text className="mt-2 text-xs text-danger">{resend.error.message}</Text>}
 
         <View className="mt-6 flex-row items-center justify-between">
           <View className="flex-1">
             <Text className="font-inter-medium text-sm">
-              {seconds > 0 ? `Resend code in ${mmss}` : resend.isPending ? "Sending a new code…" : "Didn't get the code?"}
+              {seconds > 0
+                ? t("auth.resendIn", { time: mmss })
+                : resend.isPending
+                  ? t("auth.sendingCode")
+                  : t("auth.didntGet")}
             </Text>
-            <Text className="mt-0.5 text-xs text-muted">Didn't receive it? Check your signal and number.</Text>
+            <Text className="mt-0.5 text-xs text-muted">{t("auth.checkSignal")}</Text>
           </View>
           <Pressable
             accessibilityRole="button"
-            accessibilityLabel="Resend code"
+            accessibilityLabel={t("auth.resendA11y")}
             accessibilityState={{ disabled: !canResend }}
             disabled={!canResend}
             onPress={onResend}
@@ -118,7 +144,7 @@ export default function Verify() {
           </Pressable>
         </View>
 
-        <InfoBanner className="mt-6">Never share your verification code with anyone, including a rider.</InfoBanner>
+        <InfoBanner className="mt-6">{t("auth.neverShare")}</InfoBanner>
       </View>
     </Screen>
   );

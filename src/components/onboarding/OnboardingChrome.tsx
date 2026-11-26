@@ -1,19 +1,21 @@
 import { Pressable, View } from "react-native";
 import { router } from "expo-router";
 import { IconButton, Logo, Text } from "@/components/ui";
+import { useT } from "@/i18n";
 
 /** Onboarding top bar: back arrow, centred logo, "Skip". */
 export function OnboardingHeader({ onSkip }: { onSkip: () => void }) {
+  const t = useT();
   return (
     <View className="flex-row items-center justify-between px-5 py-3">
       <IconButton
         name="arrow-back"
-        accessibilityLabel="Back"
+        accessibilityLabel={t("common.back")}
         onPress={() => (router.canGoBack() ? router.back() : router.replace("/onboarding/welcome"))}
       />
       <Logo size="sm" />
       <Pressable accessibilityRole="button" hitSlop={10} onPress={onSkip} className="h-10 w-10 items-end justify-center">
-        <Text className="font-inter-semibold text-xs text-brand-dark">Skip</Text>
+        <Text className="font-inter-semibold text-xs text-brand-dark">{t("onboarding.skip")}</Text>
       </Pressable>
     </View>
   );

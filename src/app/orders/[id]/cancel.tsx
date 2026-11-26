@@ -5,18 +5,20 @@ import { Button, InfoBanner, RadioRow, Screen, Text, TextField } from "@/compone
 import { AccountHeader } from "@/components/account";
 import { canCancel, QueryState } from "@/components/orders/status";
 import { useCancelOrder, useOrder } from "@/api/hooks";
+import { useT } from "@/i18n";
 
-const REASONS = ["Plans changed", "Pickup is taking too long", "Incorrect delivery details", "Booked by mistake", "Other reason"];
+const REASON_KEYS = ["reasonPlansChanged", "reasonTooLong", "reasonIncorrectDetails", "reasonMistake", "reasonOther"] as const;
 
 export default function CancelDelivery() {
+  const t = useT();
   const { id } = useLocalSearchParams<{ id: string }>();
   const { data: order, isLoading, error, refetch } = useOrder(id);
   const cancel = useCancelOrder();
-  const [reason, setReason] = useState<string | null>(null);
+  const [reason, setReason] = useState<(typeof REASON_KEYS)[number] | null>(null);
   const [other, setOther] = useState("");
 
-  const isOther = reason === "Other reason";
-  const finalReason = isOther ? other.trim() : reason;
+  const isOther = reason === "reasonOther";
+  const finalReason = isOther ? other.trim() : reason ? t(`orders.${reason}`) : null;
   const allowed = !!order && canCancel(order);
 
   const submit = () => {
@@ -25,7 +27,7 @@ export default function CancelDelivery() {
       { id: order.id, reason: finalReason },
       {
         onSuccess: () => router.replace("/(tabs)/orders"),
-        onError: (e) => Alert.alert("Could not cancel", e instanceof Error ? e.message : "Please try again."),
+        onError: (e) => Alert.alert(t("orders.couldNotCancel"), e instanceof Error ? e.message : t("orders.pleaseTryAgain")),
       },
     );
   };
@@ -37,9 +39,9 @@ export default function CancelDelivery() {
       footer={
         order ? (
           <View className="gap-3">
-            <Button title="Keep my delivery" variant="outline" onPress={() => router.back()} />
+            <Button title={t("orders.keepDelivery")} variant="outline" onPress={() => router.back()} />
             <Button
-              title="Cancel order"
+              title={t("orders.cancelOrder")}
               variant="danger"
               disabled={!finalReason || !allowed}
               loading={cancel.isPending}
@@ -49,29 +51,31 @@ export default function CancelDelivery() {
         ) : undefined
       }
     >
-      <AccountHeader title="Cancel this delivery?" subtitle="Tell us why. Your feedback helps us improve." />
+      <AccountHeader title={t("orders.cancelTitle")} subtitle={t("orders.cancelSubtitle")} />
       {!order ? (
         <QueryState loading={isLoading} error={error} onRetry={() => void refetch()} />
       ) : (
         <View className="mt-5 px-5">
-          <Text className="font-inter-bold text-sm">{order.code}</Text>
+          <View style={{ direction: "ltr" }} className="self-start">
+            <Text className="font-inter-bold text-sm">{order.code}</Text>
+          </View>
           {allowed ? (
             <InfoBanner className="mt-3">
-              Free to cancel while we're finding a rider. No pickup has taken place and no payment was collected.
+              {t("orders.cancelFreeBanner")}
             </InfoBanner>
           ) : (
             <InfoBanner className="mt-3" tone="danger">
-              This delivery can no longer be cancelled.
+              {t("orders.cancelNotAllowed")}
             </InfoBanner>
           )}
           <View className="mt-5">
-            {REASONS.map((r) => (
-              <RadioRow key={r} title={r} selected={reason === r} onPress={() => setReason(r)} />
+            {REASON_KEYS.map((r) => (
+              <RadioRow key={r} title={t(`orders.${r}`)} selected={reason === r} onPress={() => setReason(r)} />
             ))}
           </View>
           {isOther && (
             <TextField
-              placeholder="Tell us more..."
+              placeholder={t("orders.tellUsMore")}
               multiline
               maxLength={200}
               autoFocus

@@ -39,6 +39,12 @@
           "photosPermission": "Allow APEX AORA to access your photos to set your profile picture and attach files to support tickets.",
           "cameraPermission": "Allow APEX AORA to use your camera to take a profile picture."
         }
+      ],
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "Allow APEX AORA to use your location to set pickup and drop-off points."
+        }
       ]
     ],
     "scheme": "apexaora"

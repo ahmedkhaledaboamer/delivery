@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { Alert, Pressable, TextInput, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { Card, Text } from "@/components/ui";
+import { Card, DirIcon, Text } from "@/components/ui";
+import { useT } from "@/i18n";
 import { colors } from "@/constants/theme";
 import { formatAED } from "@/lib/format";
 import { useAppDispatch, useAppSelector } from "@/store";
@@ -36,13 +37,14 @@ function Row({
         <Text className="font-inter-semibold text-sm">{title}</Text>
         <Text className="text-[11px] text-muted">{subtitle}</Text>
       </View>
-      <Ionicons name={active ? "checkmark-circle" : "chevron-forward"} size={18} color={active ? colors.brand : colors.body} />
+      <DirIcon name={active ? "checkmark-circle" : "chevron-forward"} size={18} color={active ? colors.brand : colors.body} />
     </Pressable>
   );
 }
 
 /** "Offers & Rewards" block: promo code + redeem loyalty points + Total Discount. */
 export function OffersRewards() {
+  const t = useT();
   const dispatch = useAppDispatch();
   const { promoCode, useLoyaltyPoints } = useAppSelector((s) => s.delivery);
   const discount = useDraftDiscount();
@@ -53,13 +55,13 @@ export function OffersRewards() {
     <Card tone="tint">
       <View className="mb-3 flex-row items-center gap-2">
         <Ionicons name="gift-outline" size={18} color={colors.brand} />
-        <Text className="font-inter-semibold text-sm">Offers & Rewards</Text>
+        <Text className="font-inter-semibold text-sm">{t("payment.offersTitle")}</Text>
       </View>
       <View className="gap-2">
         <Row
           icon="pricetag-outline"
-          title={promoCode ? `Promo: ${promoCode}` : "Apply Promo Code"}
-          subtitle={promoCode ? "Tap to remove" : "Have a discount code?"}
+          title={promoCode ? t("payment.promoApplied", { code: promoCode }) : t("payment.applyPromo")}
+          subtitle={promoCode ? t("payment.tapToRemove") : t("payment.haveCode")}
           active={!!promoCode}
           onPress={() => {
             if (promoCode) {
@@ -73,7 +75,7 @@ export function OffersRewards() {
             <TextInput
               autoFocus
               autoCapitalize="characters"
-              placeholder="Enter code"
+              placeholder={t("payment.enterCode")}
               placeholderTextColor={colors.muted}
               value={code}
               onChangeText={setCode}
@@ -81,26 +83,26 @@ export function OffersRewards() {
             />
             <Pressable
               onPress={() => {
-                if (!code.trim()) return Alert.alert("Enter a promo code");
+                if (!code.trim()) return Alert.alert(t("payment.enterPromo"));
                 dispatch(setPromoCode(code.trim().toUpperCase()));
                 setEditing(false);
               }}
               className="h-11 items-center justify-center rounded-xl bg-brand px-4"
             >
-              <Text className="font-inter-semibold text-sm text-white">Apply</Text>
+              <Text className="font-inter-semibold text-sm text-white">{t("payment.apply")}</Text>
             </Pressable>
           </View>
         )}
         <Row
           icon="ribbon-outline"
-          title="Redeem Loyalty Points"
-          subtitle={useLoyaltyPoints ? "Points applied — tap to remove" : "Use your available points for a discount."}
+          title={t("payment.redeemPoints")}
+          subtitle={useLoyaltyPoints ? t("payment.pointsApplied") : t("payment.pointsHint")}
           active={useLoyaltyPoints}
           onPress={() => dispatch(setUseLoyaltyPoints(!useLoyaltyPoints))}
         />
       </View>
       <View className="mt-3 flex-row items-center justify-between border-t border-brand-light pt-3">
-        <Text className="font-inter-semibold text-sm">Total Discount</Text>
+        <Text className="font-inter-semibold text-sm">{t("payment.totalDiscount")}</Text>
         <Text className="font-inter-bold text-sm">{formatAED(discount)}</Text>
       </View>
     </Card>

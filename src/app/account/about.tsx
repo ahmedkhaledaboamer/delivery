@@ -4,26 +4,29 @@ import { LinearGradient } from "expo-linear-gradient";
 import { Header, Screen, Text } from "@/components/ui";
 import { brandGradient, brandGradientEnd, brandGradientStart, colors } from "@/constants/theme";
 import { images } from "@/constants/images";
+import { translate, useT } from "@/i18n";
+import { store } from "@/store";
 
 type IconName = keyof typeof Ionicons.glyphMap;
 
-const FEATURES: { icon: IconName; label: string }[] = [
-  { icon: "flash-outline", label: "Fast\nDelivery" },
-  { icon: "shield-checkmark-outline", label: "Safe\n& Secure" },
-  { icon: "headset-outline", label: "Dedicated\nSupport" },
+const FEATURES: { icon: IconName; labelKey: string }[] = [
+  { icon: "flash-outline", labelKey: "account.featFast" },
+  { icon: "shield-checkmark-outline", labelKey: "account.featSafe" },
+  { icon: "headset-outline", labelKey: "account.featSupport" },
 ];
 
-const WHY = ["On-time and reliable delivery", "Real-time order tracking", "A smooth and secure experience"];
+const WHY = ["account.why1", "account.why2", "account.why3"];
 
 // TODO: replace with the real APEX AORA contact details and social links.
 const PHONE = "+971 50 123 4567";
 const EMAIL = "support@apexaora.ae";
 const WHATSAPP = "971501234567";
 
-const CONTACTS: { icon: IconName; title: string; detail: string; url: string }[] = [
-  { icon: "call-outline", title: "Call Us", detail: "+971 ** **** ***", url: `tel:${PHONE.replace(/\s/g, "")}` },
-  { icon: "mail-outline", title: "Email Us", detail: EMAIL, url: `mailto:${EMAIL}` },
-  { icon: "logo-whatsapp", title: "WhatsApp", detail: "Chat With Us", url: `https://wa.me/${WHATSAPP}` },
+/** `detail` is shown as-is (phone/email); `detailKey` is translated. */
+const CONTACTS: { icon: IconName; titleKey: string; detail?: string; detailKey?: string; url: string }[] = [
+  { icon: "call-outline", titleKey: "account.callUs", detail: "+971 ** **** ***", url: `tel:${PHONE.replace(/\s/g, "")}` },
+  { icon: "mail-outline", titleKey: "account.emailUs", detail: EMAIL, url: `mailto:${EMAIL}` },
+  { icon: "logo-whatsapp", titleKey: "account.whatsapp", detailKey: "account.chatWithUs", url: `https://wa.me/${WHATSAPP}` },
 ];
 
 const SOCIALS: { icon: IconName; label: string; url: string }[] = [
@@ -34,7 +37,8 @@ const SOCIALS: { icon: IconName; label: string; url: string }[] = [
   { icon: "logo-twitter", label: "X / Twitter", url: "https://x.com" },
 ];
 
-const open = (url: string) => Linking.openURL(url).catch(() => Alert.alert("Can't open link", url));
+const open = (url: string) =>
+  Linking.openURL(url).catch(() => Alert.alert(translate(store.getState().settings.language, "account.cantOpenLink"), url));
 
 const cardShadow = { shadowColor: "#000", shadowOpacity: 0.05, shadowRadius: 8, shadowOffset: { width: 0, height: 2 }, elevation: 2 };
 
@@ -54,15 +58,16 @@ function InfoCard({ icon, title, body }: { icon: IconName; title: string; body: 
 
 /** About APEX AORA — matches the About design, in APEX AORA colours. */
 export default function AboutScreen() {
+  const t = useT();
   return (
     <Screen>
-      <Header inlineTitle="About APEX AORA" actions />
+      <Header inlineTitle={t("account.aboutApex")} actions />
 
       {/* Hero */}
       <View className="mt-1 flex-row items-center px-5">
-        <View className="flex-1 pr-2">
-          <Text className="font-inter-bold text-[26px] leading-8">About APEX AORA</Text>
-          <Text className="mt-1.5 text-xs leading-5 text-body">A fast, reliable and convenient delivery service across the UAE.</Text>
+        <View className="flex-1 pe-2">
+          <Text className="font-inter-bold text-[26px] leading-8">{t("account.aboutApex")}</Text>
+          <Text className="mt-1.5 text-xs leading-5 text-body">{t("account.aboutTagline")}</Text>
           <LinearGradient
             colors={[...brandGradient]}
             start={brandGradientStart}
@@ -85,16 +90,16 @@ export default function AboutScreen() {
       {/* Feature strip */}
       <View className="mx-5 mt-4 flex-row rounded-2xl bg-brand-lighter py-4">
         {FEATURES.map((f, i) => (
-          <View key={f.icon} className={`flex-1 items-center ${i > 0 ? "border-l border-brand-light" : ""}`}>
+          <View key={f.icon} className={`flex-1 items-center ${i > 0 ? "border-s border-brand-light" : ""}`}>
             <Ionicons name={f.icon} size={24} color={colors.brandDark} />
-            <Text className="mt-2 text-center font-inter-semibold text-xs leading-4">{f.label}</Text>
+            <Text className="mt-2 text-center font-inter-semibold text-xs leading-4">{t(f.labelKey)}</Text>
           </View>
         ))}
       </View>
 
       <View className="mx-5 mt-4">
-        <InfoCard icon="locate-outline" title="Our Mission" body="To make delivery simple, fast, and reliable for everyone in the UAE." />
-        <InfoCard icon="eye-outline" title="Our Vision" body="To be the most trusted and preferred delivery service in the region." />
+        <InfoCard icon="locate-outline" title={t("account.ourMission")} body={t("account.ourMissionBody")} />
+        <InfoCard icon="eye-outline" title={t("account.ourVision")} body={t("account.ourVisionBody")} />
       </View>
 
       {/* Why choose */}
@@ -102,13 +107,13 @@ export default function AboutScreen() {
         <Image source={images.trophy} resizeMode="contain" style={{ width: 96, height: 80 }} />
         <View className="mx-3 h-20 w-px bg-brand-light" />
         <View className="flex-1">
-          <Text className="mb-2 font-inter-bold text-sm">Why Choose APEX AORA?</Text>
+          <Text className="mb-2 font-inter-bold text-sm">{t("account.whyChoose")}</Text>
           {WHY.map((w) => (
             <View key={w} className="mb-1.5 flex-row items-center gap-2">
               <View className="h-4 w-4 items-center justify-center rounded-full bg-brand-light">
                 <Ionicons name="checkmark" size={11} color={colors.brandDark} />
               </View>
-              <Text className="flex-1 text-[11px] text-body">{w}</Text>
+              <Text className="flex-1 text-[11px] text-body">{t(w)}</Text>
             </View>
           ))}
         </View>
@@ -118,25 +123,25 @@ export default function AboutScreen() {
       <View className="mx-5 mt-4 flex-row gap-2.5">
         {CONTACTS.map((c) => (
           <Pressable
-            key={c.title}
+            key={c.titleKey}
             accessibilityRole="button"
             onPress={() => open(c.url)}
             className="flex-1 items-center rounded-2xl border border-brand-light bg-white px-2 py-3 active:opacity-70"
             style={cardShadow}
           >
             <Ionicons name={c.icon} size={20} color={colors.brandDark} />
-            <Text className="mt-1 font-inter-semibold text-sm">{c.title}</Text>
+            <Text className="mt-1 font-inter-semibold text-sm">{t(c.titleKey)}</Text>
             <Text className="mt-0.5 text-center text-[10px] text-muted" numberOfLines={1}>
-              {c.detail}
+              {c.detailKey ? t(c.detailKey) : `\u2066${c.detail}\u2069`}
             </Text>
           </Pressable>
         ))}
       </View>
 
       {/* Follow us */}
-      <View className="mx-5 mt-6 border-l-4 border-brand pl-3">
-        <Text className="font-inter-bold text-base text-brand-dark">Follow US</Text>
-        <Text className="mt-0.5 text-xs text-body">Stay connected with APEX AORA for the latest updates & offers</Text>
+      <View className="mx-5 mt-6 border-s-4 border-brand ps-3">
+        <Text className="font-inter-bold text-base text-brand-dark">{t("account.followUs")}</Text>
+        <Text className="mt-0.5 text-xs text-body">{t("account.followUsSub")}</Text>
       </View>
       <View className="mx-5 mt-4 flex-row justify-between">
         {SOCIALS.map((s) => (

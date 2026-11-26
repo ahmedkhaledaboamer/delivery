@@ -1,27 +1,29 @@
 import { Alert, Switch, View } from "react-native";
 import { router } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
-import { ListRow, Screen, SectionLabel, StaticTabBar } from "@/components/ui";
+import { DirIcon, ListRow, Screen, SectionLabel, StaticTabBar } from "@/components/ui";
 import { AccountHeader } from "@/components/account";
 import { useAppDispatch, useAppSelector } from "@/store";
 import { setPushNotifications } from "@/store/slices/settingsSlice";
 import { logout } from "@/store/slices/authSlice";
 import { colors } from "@/constants/theme";
+import { useT } from "@/i18n";
 
 const icon = (name: keyof typeof Ionicons.glyphMap, color: string = colors.body) => (
-  <Ionicons name={name} size={18} color={color} />
+  <DirIcon name={name} size={18} color={color} />
 );
 
 export default function SettingsScreen() {
+  const t = useT();
   const dispatch = useAppDispatch();
   const language = useAppSelector((s) => s.settings.language);
   const push = useAppSelector((s) => s.settings.pushNotifications);
 
   const signOut = () =>
-    Alert.alert("Sign out?", "You'll need to verify your mobile number to sign in again.", [
-      { text: "Cancel", style: "cancel" },
+    Alert.alert(t("account.signOutTitle"), t("account.signOutBody"), [
+      { text: t("common.cancel"), style: "cancel" },
       {
-        text: "Sign out",
+        text: t("account.signOut"),
         style: "destructive",
         onPress: () => {
           dispatch(logout());
@@ -32,18 +34,18 @@ export default function SettingsScreen() {
 
   return (
     <Screen edges={["bottom"]} background="white" footer={<StaticTabBar active="profile" />}>
-      <AccountHeader title="Settings" subtitle="Your APEX AORA, your way." />
+      <AccountHeader title={t("account.settings")} subtitle={t("account.settingsSubtitle")} />
 
       <View className="px-5 pt-3">
         <ListRow
-          title="Language"
+          title={t("account.language")}
           subtitle={language === "ar" ? "العربية" : "English"}
           trailing={icon("globe-outline")}
           onPress={() => router.push("/account/language")}
         />
         <ListRow
-          title="Push notifications"
-          subtitle="Pickup and delivery updates"
+          title={t("account.pushNotifications")}
+          subtitle={t("account.pushNotificationsSub")}
           trailing={
             <Switch
               value={push}
@@ -57,23 +59,23 @@ export default function SettingsScreen() {
           }
         />
 
-        <SectionLabel className="mt-4">Privacy & Security</SectionLabel>
+        <SectionLabel className="mt-4">{t("account.privacySecurity")}</SectionLabel>
         <ListRow
-          title="Change password"
+          title={t("account.changePassword")}
           trailing={icon("lock-closed-outline")}
-          onPress={() => Alert.alert("Change password", "Password change is coming soon.")} // TODO: build change-password flow
+          onPress={() => Alert.alert(t("account.changePassword"), t("account.changePasswordSoon"))} // TODO: build change-password flow
         />
-        <ListRow title="My Wallet" trailing={icon("wallet-outline")} onPress={() => router.push("/account/wallet")} />
-        <ListRow title="Loyalty Point" trailing={icon("people-outline")} onPress={() => router.push("/account/loyalty")} />
-        <ListRow title="Privacy Policy" trailing={icon("shield-checkmark-outline")} onPress={() => router.push("/account/privacy")} />
+        <ListRow title={t("account.myWallet")} trailing={icon("wallet-outline")} onPress={() => router.push("/account/wallet")} />
+        <ListRow title={t("account.loyaltyPoint")} trailing={icon("people-outline")} onPress={() => router.push("/account/loyalty")} />
+        <ListRow title={t("account.privacyPolicy")} trailing={icon("shield-checkmark-outline")} onPress={() => router.push("/account/privacy")} />
         <ListRow
-          title="Help & Support"
-          subtitle="We're here for your deliveries"
+          title={t("account.helpSupportTitle")}
+          subtitle={t("account.helpSupportSettingsSub")}
           trailing={icon("headset-outline")}
           onPress={() => router.push("/account/support")}
         />
-        <ListRow title="About APEX AORA" trailing={icon("information-circle-outline")} onPress={() => router.push("/account/about")} />
-        <ListRow title="Sign out" destructive divider={false} trailing={icon("log-out-outline", colors.danger)} onPress={signOut} />
+        <ListRow title={t("account.aboutApex")} trailing={icon("information-circle-outline")} onPress={() => router.push("/account/about")} />
+        <ListRow title={t("account.signOut")} destructive divider={false} trailing={icon("log-out-outline", colors.danger)} onPress={signOut} />
       </View>
     </Screen>
   );

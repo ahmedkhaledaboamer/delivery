@@ -7,6 +7,8 @@ export type OrderStop = {
   contactName: string;
   contactPhone: string;
   notes?: string;
+  latitude?: number;
+  longitude?: number;
 };
 
 export type Rider = {
@@ -57,6 +59,10 @@ export type CreateOrderInput = {
   tip: number;
   discount: number;
   fee: number;
+  /** Total estimated road distance (km). Falls back to 4.2 km when missing. */
+  distanceKm?: number;
+  /** Delivery window in minutes after pickup. Falls back to [25, 35] when missing. */
+  etaMinutes?: [number, number];
 };
 
 export type Address = { id: string; label: string; address: string; icon: "home" | "work" | "other" };

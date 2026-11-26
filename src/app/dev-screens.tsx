@@ -85,6 +85,18 @@ const SECTIONS: { title: string; items: Item[] }[] = [
       { label: "Create New Ticket", href: "/account/new-ticket" },
     ],
   },
+  {
+    title: "Driver",
+    items: [
+      { label: "Driver jobs", href: "/driver" },
+      { label: "Driver earnings", href: "/driver/earnings" },
+      { label: "Driver profile", href: "/driver/profile" },
+    ],
+  },
+  {
+    title: "Location",
+    items: [{ label: "Location picker (pickup)", href: "/location-picker?target=pickup" }],
+  },
 ];
 
 export default function DevScreens() {

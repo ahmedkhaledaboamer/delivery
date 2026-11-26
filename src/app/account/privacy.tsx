@@ -1,58 +1,27 @@
 import { useState } from "react";
 import { LayoutAnimation, Pressable, View } from "react-native";
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
-import { GradientIcon, Header, InfoBanner, Screen, Text } from "@/components/ui";
+import { DirIcon, GradientIcon, Header, InfoBanner, Screen, Text } from "@/components/ui";
 import { colors } from "@/constants/theme";
+import { useT } from "@/i18n";
+import { formatDayLabel } from "@/lib/format";
 
 type Section = {
   icon: { set: "ion"; name: keyof typeof Ionicons.glyphMap } | { set: "mci"; name: keyof typeof MaterialCommunityIcons.glyphMap };
-  title: string;
-  subtitle: string;
-  body: string;
+  n: number;
 };
 
+/** Section n's texts live in account.p{n}Title / p{n}Sub / p{n}Body. */
 const SECTIONS: Section[] = [
-  {
-    icon: { set: "ion", name: "shield-checkmark-outline" },
-    title: "Information We Collect",
-    subtitle: "The personal and usage information we may collect when you use APEX AORA.",
-    body:
-      "We collect your name, mobile number, email address, saved addresses, pickup and drop-off details, payment " +
-      "confirmations and basic device information. Location is collected only while you book or track a delivery.",
-  },
-  {
-    icon: { set: "ion", name: "layers-outline" },
-    title: "How We Use Your Information",
-    subtitle: "To provide, improve and personalize our services.",
-    body:
-      "Your information is used to create and fulfil deliveries, match you with riders, send order updates, " +
-      "process payments and refunds, provide support and improve the app.",
-  },
-  {
-    icon: { set: "ion", name: "lock-closed-outline" },
-    title: "Data Security",
-    subtitle: "How we keep your information safe and protected.",
-    body:
-      "Data is encrypted in transit and stored on secured servers. Access is limited to staff and partners who need " +
-      "it to deliver your order, and we never store your full card details.",
-  },
-  {
-    icon: { set: "ion", name: "people-outline" },
-    title: "Information Sharing",
-    subtitle: "When and with whom we may share your information.",
-    body:
-      "We share only what's needed: riders see pickup and drop-off contacts, payment providers process payments, and " +
-      "we may disclose data when required by law. We never sell your personal data.",
-  },
-  {
-    icon: { set: "mci", name: "cookie-outline" },
-    title: "Cookies",
-    subtitle: "How we use cookies to enhance your experience.",
-    body:
-      "Our app and website use cookies and similar technologies to keep you signed in, remember preferences and " +
-      "understand how features are used. You can manage cookies in your device or browser settings.",
-  },
+  { n: 1, icon: { set: "ion", name: "shield-checkmark-outline" } },
+  { n: 2, icon: { set: "ion", name: "layers-outline" } },
+  { n: 3, icon: { set: "ion", name: "lock-closed-outline" } },
+  { n: 4, icon: { set: "ion", name: "people-outline" } },
+  { n: 5, icon: { set: "mci", name: "cookie-outline" } },
 ];
+
+// Fixed date in the past, so formatDayLabel never prefixes "Today"/"Yesterday".
+const PRIVACY_UPDATED = "2026-11-03T12:00:00";
 
 const cardShadow = { shadowColor: "#000", shadowOpacity: 0.05, shadowRadius: 8, shadowOffset: { width: 0, height: 2 }, elevation: 2 };
 
@@ -69,6 +38,7 @@ function SectionIcon({ icon }: { icon: Section["icon"] }) {
 }
 
 function PolicyRow({ section, open, onToggle }: { section: Section; open: boolean; onToggle: () => void }) {
+  const t = useT();
   return (
     <View className="mb-3 rounded-2xl border border-line bg-white" style={cardShadow}>
       <Pressable
@@ -79,14 +49,14 @@ function PolicyRow({ section, open, onToggle }: { section: Section; open: boolea
       >
         <SectionIcon icon={section.icon} />
         <View className="flex-1">
-          <Text className="font-inter-semibold text-sm">{section.title}</Text>
-          <Text className="mt-0.5 text-[11px] leading-4 text-body">{section.subtitle}</Text>
+          <Text className="font-inter-semibold text-sm">{t(`account.p${section.n}Title`)}</Text>
+          <Text className="mt-0.5 text-[11px] leading-4 text-body">{t(`account.p${section.n}Sub`)}</Text>
         </View>
-        <Ionicons name={open ? "chevron-down" : "chevron-forward"} size={18} color={colors.body} />
+        <DirIcon name={open ? "chevron-down" : "chevron-forward"} size={18} color={colors.body} />
       </Pressable>
       {open && (
         <View className="border-t border-line px-4 pb-4 pt-3">
-          <Text className="text-xs leading-5 text-body">{section.body}</Text>
+          <Text className="text-xs leading-5 text-body">{t(`account.p${section.n}Body`)}</Text>
         </View>
       )}
     </View>
@@ -125,24 +95,25 @@ function ShieldIllustration() {
 
 /** Privacy Policy — matches the design, in APEX AORA colours. */
 export default function PrivacyScreen() {
+  const t = useT();
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   return (
     <Screen>
-      <Header inlineTitle="Privacy Policy" actions />
+      <Header inlineTitle={t("account.privacyPolicy")} actions />
 
       <View className="items-center px-5 pt-1">
         <ShieldIllustration />
-        <Text className="mt-3 font-inter-bold text-[26px] text-brand-dark">Privacy Policy</Text>
+        <Text className="mt-3 font-inter-bold text-[26px] text-brand-dark">{t("account.privacyPolicy")}</Text>
         <Text className="mt-1.5 px-6 text-center text-sm leading-5 text-body">
-          Learn how APEX AORA collects, uses and protects your information.
+          {t("account.privacyIntro")}
         </Text>
       </View>
 
       <View className="px-5 pt-5">
         {SECTIONS.map((s, i) => (
           <PolicyRow
-            key={s.title}
+            key={s.n}
             section={s}
             open={openIndex === i}
             onToggle={() => {
@@ -152,8 +123,8 @@ export default function PrivacyScreen() {
           />
         ))}
 
-        <InfoBanner className="mt-2">By using APEX AORA, you agree to the terms of this Privacy Policy.</InfoBanner>
-        <Text className="mt-4 text-center text-xs text-muted">Last updated: 3 November 2026</Text>
+        <InfoBanner className="mt-2">{t("account.privacyAgree")}</InfoBanner>
+        <Text className="mt-4 text-center text-xs text-muted">{t("account.privacyUpdated", { date: formatDayLabel(PRIVACY_UPDATED) })}</Text>
       </View>
     </Screen>
   );

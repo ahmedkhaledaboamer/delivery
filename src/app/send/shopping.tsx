@@ -8,11 +8,13 @@ import { IconButton, RadioDot, Screen, Text, TextField } from "@/components/ui";
 import { ArrowContinueButton, parseAmount } from "@/components/send";
 import { colors } from "@/constants/theme";
 import { images } from "@/constants/images";
+import { useT } from "@/i18n";
 import { useAppDispatch, useAppSelector } from "@/store";
 import { setShopping } from "@/store/slices/deliverySlice";
 
 /** Personal Shopping form (6.png). */
 export default function ShoppingScreen() {
+  const t = useT();
   const dispatch = useAppDispatch();
   const insets = useSafeAreaInsets();
   const shopping = useAppSelector((s) => s.delivery.shopping);
@@ -26,7 +28,7 @@ export default function ShoppingScreen() {
       });
       if (!res.canceled && res.assets[0]) dispatch(setShopping({ attachmentName: res.assets[0].name }));
     } catch {
-      Alert.alert("Couldn't open the file picker", "Please try again.");
+      Alert.alert(t("send.pickerErrorTitle"), t("send.pickerErrorBody"));
     }
   };
 
@@ -58,11 +60,11 @@ export default function ShoppingScreen() {
         colors={[colors.brandLight, colors.brandLighter]}
         style={{ paddingTop: insets.top, overflow: "hidden" }}
       >
-        <View className="flex-row items-center pl-5 pt-3">
-          <IconButton name="arrow-back" accessibilityLabel="Back" onPress={() => router.back()} />
-          <View className="ml-3 flex-1">
-            <Text className="font-inter-bold text-xl">Personal Shopping</Text>
-            <Text className="mt-0.5 text-xs text-body">We shop for you & deliver to your location</Text>
+        <View className="flex-row items-center ps-5 pt-3">
+          <IconButton name="arrow-back" accessibilityLabel={t("common.back")} onPress={() => router.back()} />
+          <View className="ms-3 flex-1">
+            <Text className="font-inter-bold text-xl">{t("send.shoppingTitle")}</Text>
+            <Text className="mt-0.5 text-xs text-body">{t("send.shoppingSub")}</Text>
           </View>
         </View>
         <Image source={images.shoppingBanner} resizeMode="contain" style={{ width: "100%", aspectRatio: 3, marginTop: -40 }} />
@@ -71,41 +73,41 @@ export default function ShoppingScreen() {
       <View className="-mt-4 rounded-t-3xl bg-white px-5 pt-3">
         <View className="mb-4 h-1 w-12 self-center rounded-full bg-line" />
         <TextField
-          label="Store / Place Name"
+          label={t("send.storeName")}
           hint="required"
           value={shopping.storeName}
           onChangeText={(storeName) => dispatch(setShopping({ storeName }))}
-          placeholder="Enter the store or place you want us to shop from."
-          left={<Ionicons name="storefront-outline" size={18} color={colors.brand} style={{ marginRight: 10 }} />}
+          placeholder={t("send.storeNamePlaceholder")}
+          left={<Ionicons name="storefront-outline" size={18} color={colors.brand} style={{ marginEnd: 10 }} />}
         />
         <TextField
-          label="Describe your shopping request"
+          label={t("send.shoppingRequest")}
           hint="required"
           multiline
           value={shopping.request}
           onChangeText={(request) => dispatch(setShopping({ request }))}
-          placeholder="What the items you want us to buy, including quantities, sizes, colors, or any specific details."
+          placeholder={t("send.shoppingRequestPlaceholder")}
           maxLength={500}
         />
 
-        <Text className="mb-2 font-inter-medium text-sm">Is the order already paid?</Text>
+        <Text className="mb-2 font-inter-medium text-sm">{t("send.alreadyPaidQuestion")}</Text>
         <View className="mb-4 flex-row gap-3">
-          {paidOption(true, "Already paid")}
-          {paidOption(false, "Not paid")}
+          {paidOption(true, t("send.alreadyPaid"))}
+          {paidOption(false, t("send.notPaid"))}
         </View>
 
         <TextField
-          label="Expected Order Value"
+          label={t("send.expectedValue")}
           hint="required"
           value={shopping.expectedValue}
-          onChangeText={(t) => dispatch(setShopping({ expectedValue: t.replace(/[^\d.]/g, "") }))}
-          placeholder="Enter the estimated total value of your shopping order."
+          onChangeText={(v) => dispatch(setShopping({ expectedValue: v.replace(/[^\d.]/g, "") }))}
+          placeholder={t("send.expectedValuePlaceholder")}
           keyboardType="decimal-pad"
-          left={<Text className="mr-2 font-inter-medium text-sm text-body">AED</Text>}
+          left={<Text className="me-2 font-inter-medium text-sm text-body">{t("send.aedPrefix")}</Text>}
         />
 
         <Text className="mb-2 font-inter-medium text-sm">
-          Attach Order Invoice or Document <Text className="text-xs text-muted">(optional)</Text>
+          {t("send.attachInvoice")} <Text className="text-xs text-muted">{t("send.optionalParen")}</Text>
         </Text>
         {shopping.attachmentName ? (
           <View className="flex-row items-center gap-3 rounded-xl border border-brand bg-brand-lighter px-4 py-4">
@@ -113,19 +115,20 @@ export default function ShoppingScreen() {
             <Text className="flex-1 font-inter-medium text-sm" numberOfLines={1}>
               {shopping.attachmentName}
             </Text>
-            <Pressable hitSlop={8} accessibilityLabel="Remove file" onPress={() => dispatch(setShopping({ attachmentName: null }))}>
+            <Pressable hitSlop={8} accessibilityRole="button" accessibilityLabel={t("send.removeFile")} onPress={() => dispatch(setShopping({ attachmentName: null }))}>
               <Ionicons name="close-circle" size={20} color={colors.muted} />
             </Pressable>
           </View>
         ) : (
           <Pressable
             accessibilityRole="button"
+            accessibilityLabel={t("send.uploadFile")}
             onPress={pickFile}
             className="items-center rounded-xl border border-brand-light bg-brand-lighter py-6 active:opacity-70"
           >
             <Ionicons name="arrow-up-outline" size={24} color={colors.brandDark} />
-            <Text className="mt-1 font-inter-semibold text-sm text-brand-dark">Upload File</Text>
-            <Text className="mt-0.5 text-[11px] text-muted">PDF, JPG, PNG</Text>
+            <Text className="mt-1 font-inter-semibold text-sm text-brand-dark">{t("send.uploadFile")}</Text>
+            <Text className="mt-0.5 text-[11px] text-muted">{t("send.uploadFileTypes")}</Text>
           </Pressable>
         )}
       </View>

@@ -6,14 +6,17 @@ import { AuthHeader, OrDivider, RoleTabs, SocialButtons, SwitchAuthLine, TextLin
 import { useSendOtp } from "@/api/hooks";
 import { useAppDispatch, useAppSelector } from "@/store";
 import { continueAsGuest, startVerification } from "@/store/slices/authSlice";
+import { useT } from "@/i18n";
 
 export default function SignIn() {
+  const t = useT();
   const dispatch = useAppDispatch();
   const role = useAppSelector((s) => s.auth.role);
   const [phone, setPhone] = useState("");
   const [storeName, setStoreName] = useState("");
   const sendOtp = useSendOtp();
   const isStore = role === "store";
+  const isDriver = role === "driver";
   const valid = isValidPhone(phone);
 
   const submit = () => {
@@ -32,14 +35,14 @@ export default function SignIn() {
       background="white"
       footer={
         <View>
-          <Button title="Sign in" disabled={!valid} loading={sendOtp.isPending} onPress={submit} />
-          <SwitchAuthLine prompt="New to APEX AORA?" action="Create an account" to="/auth/sign-up" />
+          <Button title={t("auth.signIn")} disabled={!valid} loading={sendOtp.isPending} onPress={submit} />
+          <SwitchAuthLine prompt={t("auth.newHere")} action={t("auth.createAccountLink")} to="/auth/sign-up" />
         </View>
       }
     >
       <AuthHeader
-        title="Good to see you again"
-        subtitle="Sign in to send, track and manage deliveries."
+        title={t("auth.signInTitle")}
+        subtitle={isDriver ? t("auth.driverSignInSubtitle") : t("auth.signInSubtitle")}
         onBack={() => (router.canGoBack() ? router.back() : router.replace("/onboarding/welcome"))}
       />
       <View className="px-5 pt-5">
@@ -47,15 +50,24 @@ export default function SignIn() {
           <RoleTabs />
         </View>
         {isStore && (
-          <TextField label="Store Name (option)" value={storeName} onChangeText={setStoreName} placeholder="Store name" />
+          <TextField
+            label={t("auth.storeNameOptional")}
+            value={storeName}
+            onChangeText={setStoreName}
+            placeholder={t("auth.storeName")}
+          />
         )}
-        <PhoneField label="mobile number" value={phone} onChangeText={setPhone} />
+        <PhoneField label={t("auth.mobileNumber")} value={phone} onChangeText={setPhone} />
         {sendOtp.isError && <Text className="-mt-2 mb-2 text-xs text-danger">{sendOtp.error.message}</Text>}
-        <OrDivider />
-        <SocialButtons />
+        {!isDriver && (
+          <>
+            <OrDivider />
+            <SocialButtons />
+          </>
+        )}
         {isStore && (
           <TextLink
-            title="Continue as a guest"
+            title={t("auth.continueGuest")}
             onPress={() => {
               dispatch(continueAsGuest());
               router.replace("/(tabs)");

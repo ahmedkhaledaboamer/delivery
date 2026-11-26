@@ -2,8 +2,9 @@ import { ReactNode } from "react";
 import { ActivityIndicator, Image, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { Header, Text } from "@/components/ui";
+import { DirIcon, Header, Text } from "@/components/ui";
 import { colors } from "@/constants/theme";
+import { useT } from "@/i18n";
 
 type IconName = keyof typeof Ionicons.glyphMap;
 
@@ -39,7 +40,7 @@ export function AccountHeader({
 
 /** Trailing icon for account rows — thin grey outline like the design. */
 export const RowIcon = ({ name, color = colors.body }: { name: IconName; color?: string }) => (
-  <Ionicons name={name} size={18} color={color} />
+  <DirIcon name={name} size={18} color={color} />
 );
 
 /** Ionicon inside a rounded light-violet tile (stand-in for the Figma icon art). */
@@ -60,7 +61,7 @@ export function IconTile({
 }) {
   return (
     <View style={{ width: size, height: size }} className={`items-center justify-center ${rounded} ${className}`}>
-      <Ionicons name={name} size={iconSize} color={color} />
+      <DirIcon name={name} size={iconSize} color={color} />
     </View>
   );
 }
@@ -85,6 +86,7 @@ export function Avatar({ name, uri, size = 56 }: { name: string; uri?: string; s
 
 /** Loading / error placeholder for query-driven blocks. */
 export function QueryState({ isLoading, error, children }: { isLoading: boolean; error: unknown; children: ReactNode }) {
+  const t = useT();
   if (isLoading) {
     return (
       <View className="items-center py-10">
@@ -95,7 +97,7 @@ export function QueryState({ isLoading, error, children }: { isLoading: boolean;
   if (error) {
     return (
       <View className="items-center py-10">
-        <Text className="text-sm text-danger">Something went wrong. Please try again.</Text>
+        <Text className="text-sm text-danger">{t("common.somethingWrong")}</Text>
       </View>
     );
   }

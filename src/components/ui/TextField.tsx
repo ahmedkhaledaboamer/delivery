@@ -1,7 +1,9 @@
 import { forwardRef, ReactNode } from "react";
 import type { TextInputInstance } from "react-native";
 import { TextInput, TextInputProps, View } from "react-native";
-import { Text } from "./Text";
+import { Text, arabicFontFor } from "./Text";
+import { useT } from "@/i18n";
+import { useAppSelector } from "@/store";
 import { colors } from "@/constants/theme";
 
 type Props = TextInputProps & {
@@ -21,14 +23,16 @@ export const TextField = forwardRef<TextInputInstance, Props>(function TextField
   { label, hint, error, showCounter, left, right, multiline, containerClassName = "", value, maxLength, ...props },
   ref,
 ) {
+  const t = useT();
+  const arabic = useAppSelector((s) => s.settings.language === "ar");
   return (
     <View className={`mb-4 ${containerClassName}`}>
       {(label || showCounter) && (
         <View className="mb-2 flex-row items-center justify-between">
           <Text className="font-inter-medium text-sm">
             {label}
-            {hint === "required" && <Text className="text-xs text-muted"> · Required</Text>}
-            {hint === "optional" && <Text className="text-xs text-muted"> (Optional)</Text>}
+            {hint === "required" && <Text className="text-xs text-muted">{t("common.requiredSuffix")}</Text>}
+            {hint === "optional" && <Text className="text-xs text-muted">{t("common.optionalSuffix")}</Text>}
           </Text>
           {showCounter && maxLength && (
             <Text className="text-xs text-muted">
@@ -52,6 +56,7 @@ export const TextField = forwardRef<TextInputInstance, Props>(function TextField
           value={value}
           maxLength={maxLength}
           {...props}
+          style={arabic ? [props.style, { fontFamily: arabicFontFor(""), textAlign: "right" }] : props.style}
         />
         {right}
       </View>

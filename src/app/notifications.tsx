@@ -1,7 +1,8 @@
 import { ActivityIndicator, Pressable, View } from "react-native";
 import { router, type Href } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
-import { Header, PageTitle, Screen, SectionLabel, StaticTabBar, Text } from "@/components/ui";
+import { DirIcon, Header, PageTitle, Screen, SectionLabel, StaticTabBar, Text } from "@/components/ui";
+import { useT } from "@/i18n";
 import { IconTile, QueryState } from "@/components/account";
 import { useMarkAllNotificationsRead, useMarkNotificationRead, useNotifications } from "@/api/hooks";
 import type { Notification } from "@/api/types";
@@ -38,11 +39,18 @@ function groupOf(iso: string): Group {
   return "Earlier";
 }
 
+const GROUP_KEY: Record<Group, string> = {
+  Today: "notifications.today",
+  Yesterday: "notifications.yesterday",
+  Earlier: "notifications.earlier",
+};
+
 function NotificationCard({ n, onPress }: { n: Notification; onPress: () => void }) {
+  const t = useT();
   return (
     <Pressable
       accessibilityRole="button"
-      accessibilityHint="Opens the related page"
+      accessibilityHint={t("notifications.opensRelated")}
       onPress={onPress}
       className={`mb-3 flex-row gap-3 rounded-2xl border p-4 active:opacity-70 ${
         n.read ? "border-line bg-white" : "border-brand-light bg-brand-lighter"
@@ -52,17 +60,18 @@ function NotificationCard({ n, onPress }: { n: Notification; onPress: () => void
       <View className="flex-1">
         <View className="flex-row items-start gap-2">
           <Text className={`flex-1 text-sm ${n.read ? "font-inter-medium" : "font-inter-semibold"}`}>{n.title}</Text>
-          {!n.read && <View className="mt-1.5 h-2 w-2 rounded-full bg-brand" accessibilityLabel="Unread" />}
+          {!n.read && <View className="mt-1.5 h-2 w-2 rounded-full bg-brand" accessibilityLabel={t("notifications.unread")} />}
         </View>
         <Text className="mt-0.5 text-xs leading-5 text-body">{n.body}</Text>
         <Text className="mt-1 text-[11px] text-muted">{formatRelative(n.createdAt)}</Text>
       </View>
-      <Ionicons name="chevron-forward" size={16} color={colors.muted} style={{ alignSelf: "center" }} />
+      <DirIcon name="chevron-forward" size={16} color={colors.muted} style={{ alignSelf: "center" }} />
     </Pressable>
   );
 }
 
 export default function NotificationsScreen() {
+  const t = useT();
   const notifications = useNotifications();
   const markAll = useMarkAllNotificationsRead();
   const markRead = useMarkNotificationRead();
@@ -82,9 +91,9 @@ export default function NotificationsScreen() {
     <Screen footer={<StaticTabBar />}>
       <View className="bg-brand-lighter pb-5">
         <Header />
-        <PageTitle title="Notifications" />
+        <PageTitle title={t("notifications.title")} />
         <View className="mt-1 flex-row items-center px-5">
-          <Text className="text-sm text-body">{unread > 0 ? `${unread} unread` : "All caught up"}</Text>
+          <Text className="text-sm text-body">{unread > 0 ? t("notifications.unreadCount", { n: unread }) : t("notifications.allCaughtUp")}</Text>
           {unread > 0 && (
             <>
               <Text className="text-sm text-body"> · </Text>
@@ -92,7 +101,7 @@ export default function NotificationsScreen() {
                 <ActivityIndicator size="small" color={colors.brand} />
               ) : (
                 <Pressable hitSlop={8} accessibilityRole="button" onPress={() => markAll.mutate()}>
-                  <Text className="font-inter-medium text-sm text-brand">Mark all as read</Text>
+                  <Text className="font-inter-medium text-sm text-brand">{t("notifications.markAllRead")}</Text>
                 </Pressable>
               )}
             </>
@@ -105,12 +114,12 @@ export default function NotificationsScreen() {
           {list.length === 0 && (
             <View className="items-center py-16">
               <IconTile name="notifications-outline" size={56} iconSize={26} rounded="rounded-full" />
-              <Text className="mt-3 text-sm text-muted">No notifications yet.</Text>
+              <Text className="mt-3 text-sm text-muted">{t("notifications.empty")}</Text>
             </View>
           )}
           {groups.map(({ g, items }) => (
             <View key={g} className="mb-2">
-              <SectionLabel>{g}</SectionLabel>
+              <SectionLabel>{t(GROUP_KEY[g])}</SectionLabel>
               {items.map((n) => (
                 <NotificationCard key={n.id} n={n} onPress={() => open(n)} />
               ))}

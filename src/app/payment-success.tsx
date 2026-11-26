@@ -8,23 +8,27 @@ import { useOrder } from "@/api/hooks";
 import type { Order } from "@/api/types";
 import { colors } from "@/constants/theme";
 import { formatAED, formatDate, formatDayLabel, formatTime } from "@/lib/format";
+import { useT, type TFunction } from "@/i18n";
 
 const goHome = () => router.replace("/(tabs)");
 
-function receiptText(o: Order) {
+function receiptText(o: Order, t: TFunction) {
   return [
-    "APEX AORA — Payment Receipt",
-    `Order: ${o.code}`,
-    `Date: ${formatDate(o.paidAt)} ${formatTime(o.paidAt)}`,
-    `From: ${o.pickup.address}`,
-    ...o.dropoffs.map((d, i) => `To${o.dropoffs.length > 1 ? ` #${i + 1}` : ""}: ${d.address} (${d.contactName})`),
-    `Contents: ${o.contents}`,
-    `Delivery fee: ${formatAED(o.fee)}`,
-    `Tip: ${formatAED(o.tip)}`,
-    `Discount: -${formatAED(o.discount)}`,
-    `Total paid: ${formatAED(o.total)}`,
-    `Payment method: ${o.paymentMethod === "card" ? "Card" : "Cash"}`,
-    `Transaction ID: ${o.transactionId}`,
+    t("payment.receiptHeading"),
+    t("payment.rOrder", { v: o.code }),
+    t("payment.rDate", { v: `${formatDate(o.paidAt)} ${formatTime(o.paidAt)}` }),
+    t("payment.rFrom", { v: o.pickup.address }),
+    ...o.dropoffs.map((d, i) => {
+      const v = `${d.address} (${d.contactName})`;
+      return o.dropoffs.length > 1 ? t("payment.rToN", { n: i + 1, v }) : t("payment.rTo", { v });
+    }),
+    t("payment.rContents", { v: o.contents }),
+    t("payment.rFee", { v: formatAED(o.fee) }),
+    t("payment.rTip", { v: formatAED(o.tip) }),
+    t("payment.rDiscount", { v: formatAED(o.discount) }),
+    t("payment.rTotal", { v: formatAED(o.total) }),
+    t("payment.rMethod", { v: o.paymentMethod === "card" ? t("payment.card") : t("payment.cash") }),
+    t("payment.rTxn", { v: o.transactionId }),
   ].join("\n");
 }
 
@@ -70,13 +74,14 @@ function ReceiptIllustration() {
 
 /** Payment Successful — shared by the customer and store flows. */
 export default function PaymentSuccessScreen() {
+  const t = useT();
   const { orderId } = useLocalSearchParams<{ orderId?: string }>();
   const { data: order, isLoading, isError, refetch } = useOrder(orderId);
 
   const copyTxn = async () => {
     if (!order) return;
     await Clipboard.setStringAsync(order.transactionId);
-    Alert.alert("Copied", "Transaction ID copied to clipboard.");
+    Alert.alert(t("payment.copied"), t("payment.txnCopied"));
   };
 
   return (
@@ -85,19 +90,19 @@ export default function PaymentSuccessScreen() {
       footer={
         order ? (
           <View className="gap-3">
-            <Button title="Track order" onPress={() => router.push(`/orders/${order.id}/track`)} />
+            <Button title={t("payment.trackOrder")} onPress={() => router.push(`/orders/${order.id}/track`)} />
             <Button
-              title="Download Receipt"
+              title={t("payment.downloadReceipt")}
               variant="outline"
               icon="download-outline"
-              onPress={() => Share.share({ title: `Receipt ${order.code}`, message: receiptText(order) })}
+              onPress={() => Share.share({ title: t("payment.receiptShareTitle", { code: order.code }), message: receiptText(order, t) })}
             />
             <View className="flex-row items-center gap-2 self-center rounded-full border border-line bg-white px-3 py-1.5">
               {(
                 [
-                  ["home-outline", "Home", "/(tabs)"],
-                  ["document-text-outline", "Orders", "/(tabs)/orders"],
-                  ["person-outline", "Profile", "/(tabs)/profile"],
+                  ["home-outline", t("common.tabHome"), "/(tabs)"],
+                  ["document-text-outline", t("common.tabOrders"), "/(tabs)/orders"],
+                  ["person-outline", t("common.tabProfile"), "/(tabs)/profile"],
                 ] as const
               ).map(([icon, label, href]) => (
                 <Pressable
@@ -120,19 +125,19 @@ export default function PaymentSuccessScreen() {
 
       <View className="items-center px-5">
         <ReceiptIllustration />
-        <View className="mt-4"><GradientText className="font-inter-bold text-[28px]">Payment Successful</GradientText></View>
-        <Text className="mt-1 px-10 text-center text-sm leading-6 text-body">Your payment has been completed successfully.</Text>
+        <View className="mt-4"><GradientText className="font-inter-bold text-[28px]">{t("payment.title")}</GradientText></View>
+        <Text className="mt-1 px-10 text-center text-sm leading-6 text-body">{t("payment.subtitle")}</Text>
       </View>
 
       <View className="mt-4 px-5">
         {isLoading && <ActivityIndicator color={colors.brand} style={{ marginTop: 24 }} />}
         {(isError || (!isLoading && !order)) && (
           <View className="mt-6 items-center gap-3">
-            <Text className="text-sm text-body">We couldn't load your order details.</Text>
+            <Text className="text-sm text-body">{t("payment.loadError")}</Text>
             {orderId ? (
-              <Button title="Retry" size="sm" variant="outline" onPress={() => refetch()} />
+              <Button title={t("common.retry")} size="sm" variant="outline" onPress={() => refetch()} />
             ) : (
-              <Button title="Go home" size="sm" variant="outline" onPress={goHome} />
+              <Button title={t("payment.goHome")} size="sm" variant="outline" onPress={goHome} />
             )}
           </View>
         )}
@@ -148,34 +153,36 @@ export default function PaymentSuccessScreen() {
                   </View>
                 </View>
                 <View className="flex-1">
-                  <Text className="font-inter-bold text-base">{order.code}</Text>
+                  <View style={{ direction: "ltr" }} className="self-start">
+                    <Text className="font-inter-bold text-base">{order.code}</Text>
+                  </View>
                   <Text className="mt-1 text-xs text-brand-dark">
-                    Received by {order.dropoffs.map((d) => d.contactName).join(", ")}
+                    {t("payment.receivedBy", { names: order.dropoffs.map((d) => d.contactName).join(t("payment.listSep")) })}
                   </Text>
                   <Text className="mt-0.5 text-[11px] text-muted">{formatDayLabel(order.createdAt)}</Text>
                 </View>
               </View>
               <View className="mt-3 flex-row items-center justify-between rounded-xl bg-brand-lighter px-3 py-3">
-                <Text className="font-inter-medium text-sm">Paid Amount</Text>
+                <Text className="font-inter-medium text-sm">{t("payment.paidAmount")}</Text>
                 <Text className="font-inter-bold text-xl text-brand-dark">{formatAED(order.total)}</Text>
               </View>
             </Card>
 
             <Card className="mt-3 py-2">
-              <InfoRow icon="card-outline" label="Payment Method">
+              <InfoRow icon="card-outline" label={t("payment.paymentMethod")}>
                 <View className="rounded-full bg-brand-light px-3 py-1">
                   <Text className="font-inter-semibold text-[11px] text-brand-dark">
-                    {order.paymentMethod === "card" ? "Card" : "Cash"}
+                    {order.paymentMethod === "card" ? t("payment.card") : t("payment.cash")}
                   </Text>
                 </View>
               </InfoRow>
-              <InfoRow icon="calendar-outline" label="Payment Date">
+              <InfoRow icon="calendar-outline" label={t("payment.paymentDate")}>
                 <Text className="font-inter-medium text-xs">
                   {formatDate(order.paidAt)} · {formatTime(order.paidAt)}
                 </Text>
               </InfoRow>
-              <InfoRow icon="receipt-outline" label="Transaction ID">
-                <Pressable onPress={copyTxn} hitSlop={8} accessibilityLabel="Copy transaction ID" className="flex-row items-center gap-1.5">
+              <InfoRow icon="receipt-outline" label={t("payment.transactionId")}>
+                <Pressable onPress={copyTxn} hitSlop={8} accessibilityLabel={t("payment.copyTxn")} className="flex-row items-center gap-1.5">
                   <Text className="font-inter-medium text-xs">{order.transactionId}</Text>
                   <Ionicons name="copy-outline" size={14} color={colors.brand} />
                 </Pressable>

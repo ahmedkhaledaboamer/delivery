@@ -18,7 +18,7 @@ export function OtpInput({ value, onChange, length = 6 }: { value: string; onCha
 
   return (
     <View className="relative">
-      <View className="flex-row justify-between" pointerEvents="none">
+      <View className="flex-row justify-between" pointerEvents="none" style={{ direction: "ltr" }}>
         {Array.from({ length }).map((_, i) => {
           const char = value[i];
           const active = i === Math.min(value.length, length - 1);

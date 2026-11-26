@@ -3,6 +3,7 @@ import { View } from "react-native";
 import Svg, { Circle, Path } from "react-native-svg";
 import { Ionicons } from "@expo/vector-icons";
 import { Text } from "@/components/ui";
+import { useT } from "@/i18n";
 import { colors } from "@/constants/theme";
 
 const STROKE = colors.brandDark;
@@ -32,6 +33,7 @@ function useWidth() {
 
 /** "Pick up. → We take it from here. → Drop off." curved route (onboarding page 1). */
 export function PickupDropoffVisual() {
+  const t = useT();
   const { w, onLayout } = useWidth();
   const H = 320;
   const L = 8; // left rail x
@@ -51,18 +53,18 @@ export function PickupDropoffVisual() {
         </Svg>
       )}
       <View className="absolute left-6 top-0">
-        <Text className="font-inter-bold text-[44px] leading-[52px] text-brand-dark">Pick up.</Text>
-        <Text className="font-inter-medium text-[9px] tracking-[2px] text-muted">YOUR DOOR</Text>
+        <Text className="font-inter-bold text-[44px] leading-[52px] text-brand-dark">{t("onboarding.pickUp")}</Text>
+        <Text className="font-inter-medium text-[9px] tracking-[2px] text-muted">{t("onboarding.yourDoor")}</Text>
       </View>
       <View className="absolute left-6 top-[118px] flex-row items-center">
-        <Text className="font-inter-semibold text-xl leading-7">{"We take it\nfrom here."}</Text>
+        <Text className="font-inter-semibold text-xl leading-7">{t("onboarding.weTakeIt")}</Text>
       </View>
       <View className="absolute right-7 top-[140px]">
         <Ionicons name="speedometer-outline" size={18} color={colors.muted} />
       </View>
       <View className="absolute left-6 top-[222px]">
-        <Text className="font-inter-bold text-[44px] leading-[52px] text-brand-dark">Drop off.</Text>
-        <Text className="font-inter-medium text-[9px] tracking-[2px] text-muted">THEIR DOOR</Text>
+        <Text className="font-inter-bold text-[44px] leading-[52px] text-brand-dark">{t("onboarding.dropOff")}</Text>
+        <Text className="font-inter-medium text-[9px] tracking-[2px] text-muted">{t("onboarding.theirDoor")}</Text>
       </View>
     </View>
   );
@@ -70,6 +72,7 @@ export function PickupDropoffVisual() {
 
 /** "Always in sight." with the 12 min · LIVE card on the route (onboarding page 2). */
 export function LiveTrackingVisual() {
+  const t = useT();
   const { w, onLayout } = useWidth();
   const H = 300;
   const L = 8;
@@ -92,7 +95,7 @@ export function LiveTrackingVisual() {
         </Svg>
       )}
       <View className="absolute left-0 top-0">
-        <Text className="font-inter-bold text-[44px] leading-[52px] text-brand-dark">{"Always\nin sight."}</Text>
+        <Text className="font-inter-bold text-[44px] leading-[52px] text-brand-dark">{t("onboarding.alwaysInSight")}</Text>
       </View>
       <View
         className="absolute left-7 right-7 top-[150px] flex-row items-center justify-between rounded-2xl border border-line bg-white px-4 py-3"
@@ -100,18 +103,18 @@ export function LiveTrackingVisual() {
       >
         <View className="flex-row items-end gap-1">
           <Text className="font-inter-bold text-[40px] leading-[46px]">12</Text>
-          <Text className="mb-1.5 font-inter-medium text-sm text-body">min</Text>
+          <Text className="mb-1.5 font-inter-medium text-sm text-body">{t("onboarding.min")}</Text>
         </View>
         <View className="items-start">
           <View className="mb-1 flex-row items-center gap-1 rounded-full bg-brand-light px-2 py-0.5">
             <View className="h-1.5 w-1.5 rounded-full bg-brand" />
-            <Text className="font-inter-bold text-[9px] tracking-wider text-brand-dark">LIVE</Text>
+            <Text className="font-inter-bold text-[9px] tracking-wider text-brand-dark">{t("onboarding.live")}</Text>
           </View>
-          <Text className="text-[10px] leading-4 text-body">{"Your rider is\non the way"}</Text>
+          <Text className="text-[10px] leading-4 text-body">{t("onboarding.riderOnWay")}</Text>
         </View>
       </View>
       <View className="absolute right-7 top-[252px]">
-        <Text className="font-inter-medium text-[9px] tracking-[2px] text-muted">CLOSER TO YOUR DOOR</Text>
+        <Text className="font-inter-medium text-[9px] tracking-[2px] text-muted">{t("onboarding.closerToDoor")}</Text>
       </View>
     </View>
   );

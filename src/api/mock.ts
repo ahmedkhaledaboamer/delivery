@@ -3,6 +3,7 @@
  * Each function mimics a network call. Replace the bodies with `api.get/post(...)`
  * from ./client when the backend is ready — the hooks in ./hooks stay the same.
  */
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import type {
   CreateOrderInput,
   CreateTicketInput,
@@ -14,7 +15,12 @@ import type {
   Wallet,
 } from "./types";
 
-const delay = (ms = 500) => new Promise((r) => setTimeout(r, ms));
+// Every call waits for the saved copy of the fake database to load first (see hydrate at the bottom).
+let ready: Promise<void> = Promise.resolve();
+const delay = async (ms = 500) => {
+  await ready;
+  await new Promise((r) => setTimeout(r, ms));
+};
 const clone = <T,>(v: T): T => JSON.parse(JSON.stringify(v));
 
 const now = Date.now();
@@ -35,12 +41,14 @@ const db: {
       flow: "send",
       status: "rider-assigned",
       createdAt: minutesAgo(20),
-      pickup: { address: "Dubai Marina, Dubai, UAE.", contactName: "Mohamed Ahmed", contactPhone: "+971 50 123 4567" },
+      pickup: { address: "Dubai Marina, Dubai, UAE.", contactName: "Mohamed Ahmed", contactPhone: "+971 50 123 4567", latitude: 25.0805, longitude: 55.1403 },
       dropoffs: [
         {
           address: "Marina Plaza, Dubai Marina, Dubai.",
           contactName: "Laila Ahmed",
           contactPhone: "+971 55 765 4321",
+          latitude: 25.0921,
+          longitude: 55.1561,
           notes: "Call on arrival. Hand over at reception.",
         },
       ],
@@ -78,8 +86,8 @@ const db: {
       status: "scheduled",
       createdAt: minutesAgo(60),
       scheduledFor: new Date(now + 24 * 3600_000).toISOString(),
-      pickup: { address: "24 Flower Road, Colombo 07", contactName: "Nethmi Perera", contactPhone: "+94 77 123 4567" },
-      dropoffs: [{ address: "18 Park Road, Colombo 05", contactName: "Kavindu Silva", contactPhone: "+94 71 765 4321" }],
+      pickup: { address: "24 Flower Road, Colombo 07", contactName: "Nethmi Perera", contactPhone: "+94 77 123 4567", latitude: 25.1972, longitude: 55.2744 },
+      dropoffs: [{ address: "18 Park Road, Colombo 05", contactName: "Kavindu Silva", contactPhone: "+94 71 765 4321", latitude: 25.2177, longitude: 55.2816 }],
       packageSize: "Small box",
       contents: "Documents",
       vehicle: "motorcycle",
@@ -105,8 +113,8 @@ const db: {
       flow: "send",
       status: "delivered",
       createdAt: minutesAgo(60 * 26),
-      pickup: { address: "24 Flower Road, Colombo 07", contactName: "Nethmi Perera", contactPhone: "+94 77 123 4567" },
-      dropoffs: [{ address: "18 Park Road, Colombo 05", contactName: "Kavindu Silva", contactPhone: "+94 71 765 4321" }],
+      pickup: { address: "24 Flower Road, Colombo 07", contactName: "Nethmi Perera", contactPhone: "+94 77 123 4567", latitude: 25.1972, longitude: 55.2744 },
+      dropoffs: [{ address: "18 Park Road, Colombo 05", contactName: "Kavindu Silva", contactPhone: "+94 71 765 4321", latitude: 25.2177, longitude: 55.2816 }],
       packageSize: "Small box",
       contents: "Books",
       vehicle: "motorcycle",
@@ -257,8 +265,8 @@ export const mockApi = {
       packageSize: "Small box",
       contents: input.contents,
       vehicle: input.vehicle,
-      distanceKm: 4.2,
-      etaMinutes: [25, 35],
+      distanceKm: input.distanceKm ?? 4.2,
+      etaMinutes: input.etaMinutes ?? [25, 35],
       fee: input.fee,
       tip: input.tip,
       discount: input.discount,
@@ -364,3 +372,54 @@ export const mockApi = {
     return clone(ticket);
   },
 };
+
+// ---------------------------------------------------------------------------
+// Persistence: the fake database is saved on the phone so orders, tickets, profile
+// changes and driver jobs survive closing the app. Remove when the real API is used.
+// ---------------------------------------------------------------------------
+const DB_KEY = "apex-aora-mock-db-v2"; // bump when the seed data changes
+
+async function save() {
+  try {
+    await AsyncStorage.setItem(DB_KEY, JSON.stringify({ db, nextOrderId }));
+  } catch {
+    // storage full / unavailable — the app keeps working in memory
+  }
+}
+
+ready = (async () => {
+  try {
+    const raw = await AsyncStorage.getItem(DB_KEY);
+    if (raw) {
+      const saved = JSON.parse(raw) as { db: typeof db; nextOrderId: number };
+      Object.assign(db, saved.db);
+      nextOrderId = saved.nextOrderId;
+    }
+  } catch {
+    // corrupted copy — start from the seed data
+  }
+})();
+
+/**
+ * For other fake-API modules (e.g. src/api/driver.ts): direct access to the in-memory tables,
+ * a wait-until-loaded helper, and save-to-phone. Not for screens.
+ */
+export const mockDb = db;
+export const mockReady = () => ready;
+export const saveMockDb = save;
+
+/** Clears saved fake data (used by "Reset demo data" in dev). */
+export async function resetMockDb() {
+  await AsyncStorage.removeItem(DB_KEY);
+}
+
+// Wrap every mutating call (anything not starting with "get") so it saves afterwards.
+for (const key of Object.keys(mockApi) as (keyof typeof mockApi)[]) {
+  if (key.startsWith("get")) continue;
+  const original = mockApi[key] as (...args: unknown[]) => Promise<unknown>;
+  (mockApi as Record<string, unknown>)[key] = async (...args: unknown[]) => {
+    const result = await original(...args);
+    await save();
+    return result;
+  };
+}

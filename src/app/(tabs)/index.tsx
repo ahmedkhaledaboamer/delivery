@@ -3,7 +3,8 @@ import { Animated, Image, Pressable, ScrollView, View } from "react-native";
 import { router } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
-import { Button, GradientText, IconButton, Logo, TAB_BAR_SPACE, Text } from "@/components/ui";
+import { Button, DirIcon, GradientText, IconButton, Logo, TAB_BAR_SPACE, Text } from "@/components/ui";
+import { useT } from "@/i18n";
 import { useAppSelector } from "@/store";
 import { useHasUnreadNotifications } from "@/api/hooks";
 import { colors } from "@/constants/theme";
@@ -66,13 +67,14 @@ function ActionRow({
         <Text className="mt-0.5 text-xs text-muted">{subtitle}</Text>
       </View>
       <View className="h-8 w-8 items-center justify-center rounded-lg bg-brand-light">
-        <Ionicons name="arrow-forward" size={16} color={colors.brandDark} />
+        <DirIcon name="arrow-forward" size={16} color={colors.brandDark} />
       </View>
     </Pressable>
   );
 }
 
 export default function Home() {
+  const t = useT();
   const role = useAppSelector((s) => s.auth.role);
   const language = useAppSelector((s) => s.settings.language);
   const hasUnread = useHasUnreadNotifications();
@@ -95,21 +97,21 @@ export default function Home() {
             <View className="flex-row items-center gap-2">
               {__DEV__ && (
                 // DEV ONLY: list of every screen for comparing with the Figma design. Hidden in release builds.
-                <IconButton name="grid-outline" accessibilityLabel="All screens" onPress={() => router.push("/dev-screens")} />
+                <IconButton name="grid-outline" accessibilityLabel={t("home.allScreens")} onPress={() => router.push("/dev-screens")} />
               )}
               <Pressable
                 accessibilityRole="button"
-                accessibilityLabel="Change language"
+                accessibilityLabel={t("home.changeLanguage")}
                 onPress={() => router.push("/account/language")}
                 className="h-10 flex-row items-center gap-1 rounded-full border border-line bg-white px-3 active:opacity-70"
               >
                 <Text className="text-sm">🇦🇪</Text>
-                <Text className="font-inter-medium text-xs">{language === "ar" ? "Ar" : "En"}</Text>
+                <Text className="font-inter-medium text-xs">{language === "ar" ? "ع" : "En"}</Text>
                 <Ionicons name="chevron-down" size={12} color={colors.body} />
               </Pressable>
               <IconButton
                 name="notifications-outline"
-                accessibilityLabel="Notifications"
+                accessibilityLabel={t("common.notifications")}
                 badge={hasUnread}
                 onPress={() => router.push("/notifications")}
               />
@@ -117,32 +119,32 @@ export default function Home() {
           </View>
 
           <View className="px-5 pb-8 pt-10">
-            <Text className="font-inter-bold text-[34px] leading-[40px]">Fast, Safe.</Text>
-            <GradientText className="font-inter-bold text-[34px] leading-[40px]">Anywhere</GradientText>
+            <Text className="font-inter-bold text-[34px] leading-[40px]">{t("home.heroLine1")}</Text>
+            <GradientText className="font-inter-bold text-[34px] leading-[40px]">{t("home.heroLine2")}</GradientText>
           </View>
 
           <View className="px-5">
             <View className="mb-3 flex-row items-center rounded-2xl border border-line bg-white p-4" style={cardShadow}>
-              <View className="flex-1 pr-3">
-                <Text className="font-inter-bold text-base">Deliver a Package</Text>
+              <View className="flex-1 pe-3">
+                <Text className="font-inter-bold text-base">{t("home.deliverTitle")}</Text>
                 <Text className="mt-1 text-[11px] leading-4 text-body">
-                  Cash On Delivery and Bulk orders are included. Don't worry.
+                  {t("home.deliverBody")}
                 </Text>
-                <Button title="Deliver Now" size="sm" className="mt-3 self-start px-8" onPress={deliverNow} />
+                <Button title={t("home.deliverNow")} size="sm" className="mt-3 self-start px-8" onPress={deliverNow} />
               </View>
               <Image source={images.box} resizeMode="contain" style={{ width: 120, height: 92 }} accessibilityIgnoresInvertColors />
             </View>
 
             <ActionRow
               icon="speedometer-outline"
-              title="Track Package"
-              subtitle="Real-Time Tracking"
+              title={t("home.trackTitle")}
+              subtitle={t("home.trackSub")}
               onPress={() => router.push("/(tabs)/orders")}
             />
             <ActionRow
               icon="time-outline"
-              title="Delivery History"
-              subtitle="View Your Order"
+              title={t("home.historyTitle")}
+              subtitle={t("home.historySub")}
               onPress={() => router.push("/(tabs)/orders?tab=past")}
             />
           </View>

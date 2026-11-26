@@ -2,6 +2,7 @@ import { ReactNode } from "react";
 import { Pressable, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { Text } from "./Text";
+import { DirIcon } from "./DirIcon";
 import { colors } from "@/constants/theme";
 
 /**
@@ -44,7 +45,7 @@ export function ListRow({
         <Text className={`font-inter-medium text-sm ${destructive ? "text-danger" : "text-ink"}`}>{title}</Text>
         {subtitle && <Text className="mt-0.5 text-xs text-muted">{subtitle}</Text>}
       </View>
-      {trailing ?? (trailingIcon ? <Ionicons name={trailingIcon} size={18} color={color} /> : null)}
+      {trailing ?? (trailingIcon ? <DirIcon name={trailingIcon} size={18} color={color} /> : null)}
     </Pressable>
   );
 }

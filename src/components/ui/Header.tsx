@@ -2,6 +2,7 @@ import { ReactNode } from "react";
 import { View } from "react-native";
 import { router } from "expo-router";
 import { useHasUnreadNotifications } from "@/api/hooks";
+import { useT } from "@/i18n";
 import { IconButton } from "./IconButton";
 import { Logo } from "./Logo";
 import { Text } from "./Text";
@@ -23,13 +24,14 @@ type Props = {
 /** Top bar: back arrow on the left, support/bell or logo on the right. */
 export function Header({ hideBack, onBack, inlineTitle, actions, logo, right, className = "" }: Props) {
   const hasUnread = useHasUnreadNotifications();
+  const t = useT();
   return (
     <View className={`flex-row items-center justify-between px-5 py-3 ${className}`}>
       <View className="flex-1 flex-row items-center gap-3">
         {!hideBack && (
           <IconButton
             name="arrow-back"
-            accessibilityLabel="Back"
+            accessibilityLabel={t("common.back")}
             onPress={onBack ?? (() => (router.canGoBack() ? router.back() : router.replace("/")))}
           />
         )}
@@ -39,8 +41,8 @@ export function Header({ hideBack, onBack, inlineTitle, actions, logo, right, cl
         {right}
         {actions && (
           <>
-            <IconButton name="headset-outline" accessibilityLabel="Help and support" onPress={() => router.push("/account/support")} />
-            <IconButton name="notifications-outline" accessibilityLabel="Notifications" badge={hasUnread} onPress={() => router.push("/notifications")} />
+            <IconButton name="headset-outline" accessibilityLabel={t("common.helpSupport")} onPress={() => router.push("/account/support")} />
+            <IconButton name="notifications-outline" accessibilityLabel={t("common.notifications")} badge={hasUnread} onPress={() => router.push("/notifications")} />
           </>
         )}
         {logo && <Logo size="sm" markOnly />}

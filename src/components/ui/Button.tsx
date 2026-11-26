@@ -2,6 +2,7 @@ import { ActivityIndicator, Pressable, PressableProps, View } from "react-native
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { Text } from "./Text";
+import { DirIcon } from "./DirIcon";
 import { brandGradient, brandGradientEnd, brandGradientStart, colors } from "@/constants/theme";
 
 type Variant = "primary" | "outline" | "outlineDark" | "ghost" | "danger" | "dark";
@@ -66,7 +67,7 @@ export function Button({ title, variant = "primary", loading, disabled, icon, si
         <ActivityIndicator color={iconColor[variant]} />
       ) : (
         <View className="flex-row items-center gap-2">
-          {icon && <Ionicons name={icon} size={size === "md" ? 18 : 16} color={iconColor[variant]} />}
+          {icon && <DirIcon name={icon} size={size === "md" ? 18 : 16} color={iconColor[variant]} />}
           <Text className={`font-inter-semibold ${size === "md" ? "text-base" : "text-sm"} ${label[variant]}`}>{title}</Text>
         </View>
       )}

@@ -8,8 +8,10 @@ import { OrderTimeline, packageLine, QueryState } from "@/components/orders/stat
 import { useOrder, useRateOrder } from "@/api/hooks";
 import { colors } from "@/constants/theme";
 import { formatAED, formatDayLabel } from "@/lib/format";
+import { useT } from "@/i18n";
 
 export default function Delivered() {
+  const t = useT();
   const { id } = useLocalSearchParams<{ id: string }>();
   const { data: order, isLoading, error, refetch } = useOrder(id);
   const rate = useRateOrder();
@@ -37,17 +39,17 @@ export default function Delivered() {
         { id: order.id, rating, comment: comment.trim() },
         {
           onSuccess: goHome,
-          onError: (e) => Alert.alert("Could not save your rating", e instanceof Error ? e.message : "Please try again."),
+          onError: (e) => Alert.alert(t("orders.couldNotSaveRating"), e instanceof Error ? e.message : t("orders.pleaseTryAgain")),
         },
       );
     } else goHome();
   };
 
   return (
-    <Screen edges={["bottom"]} background="white" footer={<Button title="Back to home" loading={rate.isPending} onPress={finish} />}>
+    <Screen edges={["bottom"]} background="white" footer={<Button title={t("orders.backToHome")} loading={rate.isPending} onPress={finish} />}>
       <AccountHeader
-        title="Delivered. Day made."
-        subtitle={`Your package arrived safely${deliveredAt ? ` at ${deliveredAt}` : ""}.`}
+        title={t("orders.deliveredTitle")}
+        subtitle={deliveredAt ? t("orders.arrivedSafelyAt", { time: deliveredAt }) : t("orders.arrivedSafely")}
       />
       <View className="px-5">
 
@@ -58,8 +60,10 @@ export default function Delivered() {
               <Ionicons name="cube-outline" size={24} color={colors.brand} />
             </View>
             <View className="flex-1">
-              <Text className="font-inter-bold text-sm">{order.code}</Text>
-              {!!receiver?.contactName && <Text className="mt-0.5 text-xs text-body">Received by {receiver.contactName}</Text>}
+              <View style={{ direction: "ltr" }} className="self-start">
+                <Text className="font-inter-bold text-sm">{order.code}</Text>
+              </View>
+              {!!receiver?.contactName && <Text className="mt-0.5 text-xs text-body">{t("orders.receivedBy", { name: receiver.contactName })}</Text>}
               <Text className="mt-0.5 text-[11px] text-muted">{formatDayLabel(order.createdAt)}</Text>
             </View>
           </View>
@@ -72,28 +76,28 @@ export default function Delivered() {
           <Card tone="tint" className="mt-3">
             <View className="flex-row items-center justify-between">
               <View>
-                <Text className="font-inter-semibold text-sm">Delivery fee</Text>
+                <Text className="font-inter-semibold text-sm">{t("orders.deliveryFee")}</Text>
                 <Text className="mt-0.5 text-[11px] text-muted">
-                  {order.paymentMethod === "cash" ? "Cash collected from receiver" : "Paid by card"}
+                  {order.paymentMethod === "cash" ? t("orders.cashCollected") : t("orders.paidByCard")}
                 </Text>
               </View>
               <Text className="font-inter-bold text-lg text-brand-dark">{formatAED(order.total || order.fee)}</Text>
             </View>
           </Card>
-          <Text className="mt-2 text-[11px] text-muted">Delivery fee only. Nothing collected for package contents.</Text>
+          <Text className="mt-2 text-[11px] text-muted">{t("orders.feeOnlyNote")}</Text>
         </Card>
 
         <View className="mt-5 rounded-2xl border border-brand bg-white p-4">
           <Text className="font-inter-semibold text-sm">
-            Rate your delivery <Text className="text-sm text-danger">*</Text>
+            {t("orders.rateDelivery")} <Text className="text-sm text-danger">*</Text>
           </Text>
-          <Text className="mt-0.5 text-xs text-muted">Your rating helps us keep a great service.</Text>
+          <Text className="mt-0.5 text-xs text-muted">{t("orders.rateHint")}</Text>
           <View className="mt-3 flex-row gap-3">
             {[1, 2, 3, 4, 5].map((n) => (
               <Pressable
                 key={n}
                 accessibilityRole="button"
-                accessibilityLabel={`${n} star${n > 1 ? "s" : ""}`}
+                accessibilityLabel={n > 1 ? t("orders.starsN", { n }) : t("orders.starOne")}
                 disabled={alreadyRated}
                 hitSlop={4}
                 onPress={() => setRating(n === rating ? 0 : n)}
@@ -106,9 +110,9 @@ export default function Delivered() {
 
         <View className="mt-5">
           <TextField
-            label="Add a comment"
+            label={t("orders.addComment")}
             hint="optional"
-            placeholder="Type...."
+            placeholder={t("orders.typePlaceholder")}
             multiline
             maxLength={300}
             editable={!alreadyRated}
