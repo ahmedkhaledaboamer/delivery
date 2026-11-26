@@ -32,6 +32,13 @@
           "resizeMode": "contain",
           "backgroundColor": "#140B34"
         }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Allow APEX AORA to access your photos to set your profile picture and attach files to support tickets.",
+          "cameraPermission": "Allow APEX AORA to use your camera to take a profile picture."
+        }
       ]
     ],
     "scheme": "apexaora"

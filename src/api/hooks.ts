@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { mockApi } from "./mock";
-import type { CreateOrderInput, CreateTicketInput, Profile } from "./types";
+import type { CreateOrderInput, CreateTicketInput, Notification, Profile } from "./types";
 
 export const queryKeys = {
   orders: ["orders"] as const,
@@ -68,6 +68,24 @@ export const useUpdateProfile = () => {
 
 // ---------- notifications / wallet / loyalty / support ----------
 export const useNotifications = () => useQuery({ queryKey: queryKeys.notifications, queryFn: mockApi.getNotifications });
+
+/** True when at least one notification is unread — drives the dot on the bell icon. */
+export const useHasUnreadNotifications = () => {
+  const { data } = useNotifications();
+  return !!data?.some((n) => !n.read);
+};
+
+/** Marks one notification read; updates the list immediately so the unread dot disappears on tap. */
+export const useMarkNotificationRead = () => {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => mockApi.markNotificationRead(id),
+    onMutate: (id) => {
+      qc.setQueryData<Notification[]>(queryKeys.notifications, (list) => list?.map((n) => (n.id === id ? { ...n, read: true } : n)));
+    },
+    onSettled: () => qc.invalidateQueries({ queryKey: queryKeys.notifications }),
+  });
+};
 
 export const useMarkAllNotificationsRead = () => {
   const qc = useQueryClient();

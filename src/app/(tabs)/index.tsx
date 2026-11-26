@@ -5,6 +5,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { Button, GradientText, IconButton, Logo, TAB_BAR_SPACE, Text } from "@/components/ui";
 import { useAppSelector } from "@/store";
+import { useHasUnreadNotifications } from "@/api/hooks";
 import { colors } from "@/constants/theme";
 import { images } from "@/constants/images";
 
@@ -74,6 +75,7 @@ function ActionRow({
 export default function Home() {
   const role = useAppSelector((s) => s.auth.role);
   const language = useAppSelector((s) => s.settings.language);
+  const hasUnread = useHasUnreadNotifications();
 
   const deliverNow = () => router.push(role === "store" ? "/store/create-request" : "/send/service");
 
@@ -108,7 +110,7 @@ export default function Home() {
               <IconButton
                 name="notifications-outline"
                 accessibilityLabel="Notifications"
-                badge
+                badge={hasUnread}
                 onPress={() => router.push("/notifications")}
               />
             </View>

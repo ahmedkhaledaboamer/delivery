@@ -78,6 +78,8 @@ export type Notification = {
   createdAt: string;
   read: boolean;
   kind: "rider" | "confirmed" | "delivered" | "welcome";
+  /** Order the notification is about — used to open the right screen when tapped. */
+  orderId?: string;
 };
 
 export type WalletTransaction = { id: string; title: string; date: string; amount: number };

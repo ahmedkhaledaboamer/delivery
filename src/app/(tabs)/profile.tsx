@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
-import { Pressable, View } from "react-native";
+import { Alert, Pressable, View } from "react-native";
 import { router } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { Button, Card, InfoBanner, ListRow, Screen, TAB_BAR_SPACE, Text, TextField } from "@/components/ui";
-import { AccountHeader, Avatar, IconTile, QueryState, RowIcon } from "@/components/account";
-import { useProfile } from "@/api/hooks";
+import { AccountHeader, AvatarPicker, IconTile, QueryState, RowIcon } from "@/components/account";
+import { useProfile, useUpdateProfile } from "@/api/hooks";
 import type { Address } from "@/api/types";
-import { useAppSelector } from "@/store";
+import { useAppDispatch, useAppSelector } from "@/store";
+import { updateUser } from "@/store/slices/authSlice";
 import { maskPhone } from "@/lib/format";
 import { colors } from "@/constants/theme";
 
@@ -73,7 +74,18 @@ export default function ProfileScreen() {
 
   const name = user?.name ?? profile.data?.name ?? "";
   const phone = user?.phone ?? profile.data?.phone ?? "";
-  const avatar = user?.avatar ?? profile.data?.avatar;
+  const avatar = user ? user.avatar : profile.data?.avatar;
+  const dispatch = useAppDispatch();
+  const updateProfile = useUpdateProfile();
+
+  // TODO: upload the image file to the backend (multipart) and store the returned URL instead of the local uri.
+  const changePhoto = (uri: string | undefined) =>
+    updateProfile.mutateAsync({ avatar: uri }).then(
+      () => {
+        dispatch(updateUser({ avatar: uri }));
+      },
+      () => Alert.alert("Couldn't update photo", "Please try again."),
+    );
 
   return (
     <Screen edges={[]} background="white">
@@ -90,7 +102,7 @@ export default function ProfileScreen() {
           <QueryState isLoading={profile.isLoading} error={profile.error}>
             <View className="px-5">
               <View className="flex-row items-center gap-4 pb-2 pt-5">
-                <Avatar name={name} uri={avatar} size={60} />
+                <AvatarPicker name={name} uri={avatar} size={64} onChange={changePhoto} busy={updateProfile.isPending} />
                 <View className="flex-1">
                   <Text className="font-inter-semibold text-base">{name}</Text>
                   <Text className="mt-1 text-xs text-muted">{maskPhone(phone)}</Text>

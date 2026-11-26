@@ -154,6 +154,7 @@ const db: {
       createdAt: minutesAgo(2),
       read: false,
       kind: "rider",
+      orderId: "10428",
     },
     {
       id: "n2",
@@ -162,6 +163,7 @@ const db: {
       createdAt: minutesAgo(5),
       read: false,
       kind: "confirmed",
+      orderId: "10428",
     },
     {
       id: "n3",
@@ -170,6 +172,7 @@ const db: {
       createdAt: minutesAgo(60 * 24),
       read: true,
       kind: "delivered",
+      orderId: "10390",
     },
     {
       id: "n4",
@@ -278,6 +281,7 @@ export const mockApi = {
       createdAt: t.toISOString(),
       read: false,
       kind: "confirmed",
+      orderId: id,
     });
     return clone(order);
   },
@@ -313,6 +317,12 @@ export const mockApi = {
   async getNotifications() {
     await delay(300);
     return clone(db.notifications);
+  },
+  async markNotificationRead(id: string) {
+    await delay(150);
+    const n = db.notifications.find((x) => x.id === id);
+    if (n) n.read = true;
+    return true;
   },
   async markAllNotificationsRead() {
     await delay(200);

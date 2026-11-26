@@ -1,8 +1,9 @@
 import { ActivityIndicator, Pressable, View } from "react-native";
+import { router, type Href } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
-import { Card, Header, PageTitle, Screen, SectionLabel, StaticTabBar, Text } from "@/components/ui";
+import { Header, PageTitle, Screen, SectionLabel, StaticTabBar, Text } from "@/components/ui";
 import { IconTile, QueryState } from "@/components/account";
-import { useMarkAllNotificationsRead, useNotifications } from "@/api/hooks";
+import { useMarkAllNotificationsRead, useMarkNotificationRead, useNotifications } from "@/api/hooks";
 import type { Notification } from "@/api/types";
 import { formatRelative } from "@/lib/format";
 import { colors } from "@/constants/theme";
@@ -14,6 +15,20 @@ const KIND_ICON: Record<Notification["kind"], keyof typeof Ionicons.glyphMap> = 
   welcome: "sparkles-outline",
 };
 
+/** Where tapping a notification takes you. */
+function notificationHref(n: Notification): Href {
+  switch (n.kind) {
+    case "rider":
+      return n.orderId ? `/orders/${n.orderId}/track` : "/(tabs)/orders";
+    case "confirmed":
+      return n.orderId ? `/orders/${n.orderId}` : "/(tabs)/orders";
+    case "delivered":
+      return n.orderId ? `/orders/${n.orderId}/delivered` : "/(tabs)/orders?tab=past";
+    case "welcome":
+      return "/(tabs)/profile"; // "Save an address for faster booking"
+  }
+}
+
 type Group = "Today" | "Yesterday" | "Earlier";
 
 function groupOf(iso: string): Group {
@@ -23,9 +38,16 @@ function groupOf(iso: string): Group {
   return "Earlier";
 }
 
-function NotificationCard({ n }: { n: Notification }) {
+function NotificationCard({ n, onPress }: { n: Notification; onPress: () => void }) {
   return (
-    <Card tone={n.read ? "white" : "tint"} className="mb-3 flex-row gap-3">
+    <Pressable
+      accessibilityRole="button"
+      accessibilityHint="Opens the related page"
+      onPress={onPress}
+      className={`mb-3 flex-row gap-3 rounded-2xl border p-4 active:opacity-70 ${
+        n.read ? "border-line bg-white" : "border-brand-light bg-brand-lighter"
+      }`}
+    >
       <IconTile name={KIND_ICON[n.kind]} size={36} iconSize={18} rounded="rounded-full" className={n.read ? "bg-brand-lighter" : "bg-white"} />
       <View className="flex-1">
         <View className="flex-row items-start gap-2">
@@ -35,13 +57,20 @@ function NotificationCard({ n }: { n: Notification }) {
         <Text className="mt-0.5 text-xs leading-5 text-body">{n.body}</Text>
         <Text className="mt-1 text-[11px] text-muted">{formatRelative(n.createdAt)}</Text>
       </View>
-    </Card>
+      <Ionicons name="chevron-forward" size={16} color={colors.muted} style={{ alignSelf: "center" }} />
+    </Pressable>
   );
 }
 
 export default function NotificationsScreen() {
   const notifications = useNotifications();
   const markAll = useMarkAllNotificationsRead();
+  const markRead = useMarkNotificationRead();
+
+  const open = (n: Notification) => {
+    if (!n.read) markRead.mutate(n.id);
+    router.push(notificationHref(n));
+  };
 
   const list = notifications.data ?? [];
   const unread = list.filter((n) => !n.read).length;
@@ -83,7 +112,7 @@ export default function NotificationsScreen() {
             <View key={g} className="mb-2">
               <SectionLabel>{g}</SectionLabel>
               {items.map((n) => (
-                <NotificationCard key={n.id} n={n} />
+                <NotificationCard key={n.id} n={n} onPress={() => open(n)} />
               ))}
             </View>
           ))}

@@ -111,3 +111,5 @@ export function SectionHeader({ title, right }: { title: string; right?: ReactNo
     </View>
   );
 }
+
+export { AvatarPicker } from "./AvatarPicker";

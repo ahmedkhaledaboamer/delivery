@@ -1,9 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
-import { Alert, Pressable, View } from "react-native";
+import { Alert, View } from "react-native";
 import { router } from "expo-router";
-import * as ImagePicker from "expo-image-picker";
 import { Button, InfoBanner, PhoneField, Screen, Text, TextField, isValidPhone } from "@/components/ui";
-import { AccountHeader, Avatar, QueryState } from "@/components/account";
+import { AccountHeader, AvatarPicker, QueryState } from "@/components/account";
 import { useProfile, useUpdateProfile } from "@/api/hooks";
 import { useAppDispatch } from "@/store";
 import { updateUser } from "@/store/slices/authSlice";
@@ -44,16 +43,6 @@ export default function EditProfileScreen() {
   const phoneValid = isValidPhone(phone);
   const canSave = changed && nameValid && emailValid && phoneValid;
 
-  const pickPhoto = async () => {
-    const perm = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (!perm.granted) {
-      Alert.alert("Permission needed", "Allow photo access to change your profile photo.");
-      return;
-    }
-    const res = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ["images"], allowsEditing: true, aspect: [1, 1], quality: 0.7 });
-    if (!res.canceled && res.assets[0]) setAvatar(res.assets[0].uri);
-  };
-
   const save = () => {
     const patch = { name: name.trim(), email: email.trim(), phone: `${countryCode} ${phone.trim()}`, avatar };
     update.mutate(patch, {
@@ -75,10 +64,10 @@ export default function EditProfileScreen() {
 
       <QueryState isLoading={profile.isLoading} error={profile.error}>
         <View className="px-5 pt-6">
-          <Pressable onPress={pickPhoto} className="mb-6 flex-row items-center gap-4 active:opacity-70">
-            <Avatar name={name} uri={avatar} size={60} />
+          <View className="mb-6 flex-row items-center gap-4">
+            <AvatarPicker name={name} uri={avatar} size={64} onChange={setAvatar} />
             <Text className="font-inter-medium text-sm text-brand">Change photo</Text>
-          </Pressable>
+          </View>
 
           <TextField
             label="Full name"
