@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { Alert, View } from "react-native";
 import { router, useLocalSearchParams } from "expo-router";
-import { Button, Header, InfoBanner, PageTitle, RadioRow, Screen, Text, TextField } from "@/components/ui";
+import { Button, InfoBanner, RadioRow, Screen, Text, TextField } from "@/components/ui";
+import { AccountHeader } from "@/components/account";
 import { canCancel, QueryState } from "@/components/orders/status";
 import { useCancelOrder, useOrder } from "@/api/hooks";
 
@@ -31,6 +32,8 @@ export default function CancelDelivery() {
 
   return (
     <Screen
+      edges={["bottom"]}
+      background="white"
       footer={
         order ? (
           <View className="gap-3">
@@ -46,8 +49,7 @@ export default function CancelDelivery() {
         ) : undefined
       }
     >
-      <Header actions />
-      <PageTitle title="Cancel this delivery?" subtitle="Tell us why. Your feedback helps us improve." />
+      <AccountHeader title="Cancel this delivery?" subtitle="Tell us why. Your feedback helps us improve." />
       {!order ? (
         <QueryState loading={isLoading} error={error} onRetry={() => void refetch()} />
       ) : (

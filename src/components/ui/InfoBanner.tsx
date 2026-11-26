@@ -23,7 +23,11 @@ export function InfoBanner({
     >
       <Ionicons name={icon} size={16} color={danger ? colors.danger : colors.brand} style={{ marginTop: 1 }} />
       <View className="flex-1">
-        {typeof children === "string" ? <Text className="text-xs leading-5 text-body">{children}</Text> : children}
+        {typeof children === "string" ? (
+          <Text className={`text-xs leading-5 ${danger ? "text-danger" : "text-brand-dark"}`}>{children}</Text>
+        ) : (
+          children
+        )}
       </View>
     </View>
   );

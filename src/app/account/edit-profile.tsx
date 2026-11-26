@@ -2,8 +2,8 @@ import { useEffect, useMemo, useState } from "react";
 import { Alert, Pressable, View } from "react-native";
 import { router } from "expo-router";
 import * as ImagePicker from "expo-image-picker";
-import { Button, Header, InfoBanner, PageTitle, PhoneField, Screen, Text, TextField, isValidPhone } from "@/components/ui";
-import { Avatar, QueryState } from "@/components/account";
+import { Button, InfoBanner, PhoneField, Screen, Text, TextField, isValidPhone } from "@/components/ui";
+import { AccountHeader, Avatar, QueryState } from "@/components/account";
 import { useProfile, useUpdateProfile } from "@/api/hooks";
 import { useAppDispatch } from "@/store";
 import { updateUser } from "@/store/slices/authSlice";
@@ -66,16 +66,17 @@ export default function EditProfileScreen() {
   };
 
   return (
-    <Screen footer={<Button title="Save changes" disabled={!canSave} loading={update.isPending} onPress={save} />}>
-      <View className="bg-brand-lighter pb-5">
-        <Header actions />
-        <PageTitle title="Edit profile" subtitle="Keep your contact details up to date." />
-      </View>
+    <Screen
+      edges={["bottom"]}
+      background="white"
+      footer={<Button title="Save changes" disabled={!canSave} loading={update.isPending} onPress={save} />}
+    >
+      <AccountHeader title="Edit profile" subtitle="Keep your contact details up to date." />
 
       <QueryState isLoading={profile.isLoading} error={profile.error}>
-        <View className="px-5 pt-5">
+        <View className="px-5 pt-6">
           <Pressable onPress={pickPhoto} className="mb-6 flex-row items-center gap-4 active:opacity-70">
-            <Avatar name={name} uri={avatar} size={64} />
+            <Avatar name={name} uri={avatar} size={60} />
             <Text className="font-inter-medium text-sm text-brand">Change photo</Text>
           </Pressable>
 
@@ -103,7 +104,7 @@ export default function EditProfileScreen() {
             error={phone.length > 0 && !phoneValid ? "Enter a valid mobile number" : undefined}
           />
           <InfoBanner>
-            Changing your mobile number applies SMS verification. Existing orders keep their original contact details.
+            Changing your mobile number requires SMS verification. Existing orders keep their original contact details.
           </InfoBanner>
         </View>
       </QueryState>

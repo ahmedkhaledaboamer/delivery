@@ -4,7 +4,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import * as DocumentPicker from "expo-document-picker";
 import { router } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { Header, Screen, Text, TextField } from "@/components/ui";
+import { IconButton, RadioDot, Screen, Text, TextField } from "@/components/ui";
 import { ArrowContinueButton, parseAmount } from "@/components/send";
 import { colors } from "@/constants/theme";
 import { images } from "@/constants/images";
@@ -38,11 +38,11 @@ export default function ShoppingScreen() {
         accessibilityState={{ selected: active }}
         onPress={() => dispatch(setShopping({ alreadyPaid: paid }))}
         className={`h-12 flex-1 flex-row items-center justify-center gap-2 rounded-xl border ${
-          active ? "border-brand bg-brand-light" : "border-line bg-white"
+          active ? "border-brand bg-brand-lighter" : "border-line bg-white"
         }`}
       >
-        {active && <Ionicons name="checkmark-circle" size={16} color={colors.brand} />}
-        <Text className={`text-sm ${active ? "font-inter-semibold text-brand-dark" : "font-inter-medium text-body"}`}>{label}</Text>
+        {active && <RadioDot selected />}
+        <Text className={`text-sm ${active ? "font-inter-semibold text-ink" : "text-muted"}`}>{label}</Text>
       </Pressable>
     );
   };
@@ -56,19 +56,23 @@ export default function ShoppingScreen() {
       {/* Curved violet header band with the shopping-bag banner from the design. */}
       <LinearGradient
         colors={[colors.brandLight, colors.brandLighter]}
-        style={{ borderBottomLeftRadius: 40, borderBottomRightRadius: 40, paddingTop: insets.top, overflow: "hidden" }}
+        style={{ paddingTop: insets.top, overflow: "hidden" }}
       >
-        <Header />
-        <View className="px-5">
-          <Text className="font-inter-bold text-xl text-brand-dark">Personal Shopping</Text>
-          <Text className="mt-1 w-3/5 text-xs text-body">We shop for you & deliver to your location</Text>
+        <View className="flex-row items-center pl-5 pt-3">
+          <IconButton name="arrow-back" accessibilityLabel="Back" onPress={() => router.back()} />
+          <View className="ml-3 flex-1">
+            <Text className="font-inter-bold text-xl">Personal Shopping</Text>
+            <Text className="mt-0.5 text-xs text-body">We shop for you & deliver to your location</Text>
+          </View>
         </View>
-        <Image source={images.shoppingBanner} resizeMode="contain" style={{ width: "100%", aspectRatio: 3, marginTop: -36 }} />
+        <Image source={images.shoppingBanner} resizeMode="contain" style={{ width: "100%", aspectRatio: 3, marginTop: -40 }} />
       </LinearGradient>
 
-      <View className="mt-5 px-5">
+      <View className="-mt-4 rounded-t-3xl bg-white px-5 pt-3">
+        <View className="mb-4 h-1 w-12 self-center rounded-full bg-line" />
         <TextField
-          label="Store / Place Name *"
+          label="Store / Place Name"
+          hint="required"
           value={shopping.storeName}
           onChangeText={(storeName) => dispatch(setShopping({ storeName }))}
           placeholder="Enter the store or place you want us to shop from."
@@ -76,6 +80,7 @@ export default function ShoppingScreen() {
         />
         <TextField
           label="Describe your shopping request"
+          hint="required"
           multiline
           value={shopping.request}
           onChangeText={(request) => dispatch(setShopping({ request }))}
@@ -90,7 +95,8 @@ export default function ShoppingScreen() {
         </View>
 
         <TextField
-          label="Expected Order Value *"
+          label="Expected Order Value"
+          hint="required"
           value={shopping.expectedValue}
           onChangeText={(t) => dispatch(setShopping({ expectedValue: t.replace(/[^\d.]/g, "") }))}
           placeholder="Enter the estimated total value of your shopping order."
@@ -115,9 +121,9 @@ export default function ShoppingScreen() {
           <Pressable
             accessibilityRole="button"
             onPress={pickFile}
-            className="items-center rounded-xl border border-dashed border-brand bg-brand-lighter py-6 active:opacity-70"
+            className="items-center rounded-xl border border-brand-light bg-brand-lighter py-6 active:opacity-70"
           >
-            <Ionicons name="cloud-upload-outline" size={26} color={colors.brand} />
+            <Ionicons name="arrow-up-outline" size={24} color={colors.brandDark} />
             <Text className="mt-1 font-inter-semibold text-sm text-brand-dark">Upload File</Text>
             <Text className="mt-0.5 text-[11px] text-muted">PDF, JPG, PNG</Text>
           </Pressable>

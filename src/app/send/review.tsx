@@ -2,7 +2,7 @@ import { Alert, View } from "react-native";
 import { router } from "expo-router";
 import { Button, Card, Header, Screen, Text } from "@/components/ui";
 import { OffersRewards, TipSelector, useDraftDiscount } from "@/components/delivery";
-import { OrderCostSummary, PREFERENCES, ReviewSection, StepPill, useDraftPricing } from "@/components/send";
+import { FlowHeader, FlowSheet, OrderCostSummary, PREFERENCES, ReviewSection, useDraftPricing } from "@/components/send";
 import { useCreateOrder } from "@/api/hooks";
 import type { OrderStop } from "@/api/types";
 import { formatAED } from "@/lib/format";
@@ -73,12 +73,9 @@ export default function ReviewScreen() {
     );
 
   return (
-    <Screen footer={<Button title="Go to pay" loading={createOrder.isPending} onPress={goToPay} />}>
-      <Header actions />
-      <View className="px-5">
-        <StepPill label="6 of 7 · Review" />
-        <Text className="mt-3 font-inter-bold text-2xl">Ready to send?</Text>
-        <Text className="mt-1 text-sm text-body">Review your delivery. Edit anything below.</Text>
+    <Screen edges={["bottom"]} background="white" footer={<Button title="Go to pay" loading={createOrder.isPending} onPress={goToPay} />}>
+      <FlowHeader step="6 of 7 · Review" title="Ready to send?" subtitle="Review your delivery. Edit anything below." />
+      <FlowSheet>
 
         <ReviewSection title="Locations & contacts" onEdit={() => router.dismissTo("/send/pickup")}>
           <StopLine label="Pickup" stop={draft.pickup} />
@@ -135,7 +132,7 @@ export default function ReviewScreen() {
           <OffersRewards />
           <TipSelector value={draft.tip} onChange={(v) => dispatch(setTip(v))} />
         </View>
-      </View>
+      </FlowSheet>
     </Screen>
   );
 }

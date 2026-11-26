@@ -1,7 +1,8 @@
 import { Alert, Switch, View } from "react-native";
 import { router } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
-import { Header, ListRow, PageTitle, Screen, SectionLabel, StaticTabBar } from "@/components/ui";
+import { ListRow, Screen, SectionLabel, StaticTabBar } from "@/components/ui";
+import { AccountHeader } from "@/components/account";
 import { useAppDispatch, useAppSelector } from "@/store";
 import { setPushNotifications } from "@/store/slices/settingsSlice";
 import { logout } from "@/store/slices/authSlice";
@@ -30,11 +31,8 @@ export default function SettingsScreen() {
     ]);
 
   return (
-    <Screen footer={<StaticTabBar active="profile" />}>
-      <View className="bg-brand-lighter pb-5">
-        <Header actions />
-        <PageTitle title="Settings" subtitle="Your APEX AORA, your way." />
-      </View>
+    <Screen edges={["bottom"]} background="white" footer={<StaticTabBar active="profile" />}>
+      <AccountHeader title="Settings" subtitle="Your APEX AORA, your way." />
 
       <View className="px-5 pt-3">
         <ListRow
@@ -59,14 +57,14 @@ export default function SettingsScreen() {
           }
         />
 
-        <SectionLabel className="mt-6">Privacy & Security</SectionLabel>
+        <SectionLabel className="mt-4">Privacy & Security</SectionLabel>
         <ListRow
           title="Change password"
           trailing={icon("lock-closed-outline")}
           onPress={() => Alert.alert("Change password", "Password change is coming soon.")} // TODO: build change-password flow
         />
         <ListRow title="My Wallet" trailing={icon("wallet-outline")} onPress={() => router.push("/account/wallet")} />
-        <ListRow title="Loyalty Point" trailing={icon("ribbon-outline")} onPress={() => router.push("/account/loyalty")} />
+        <ListRow title="Loyalty Point" trailing={icon("people-outline")} onPress={() => router.push("/account/loyalty")} />
         <ListRow title="Privacy Policy" trailing={icon("shield-checkmark-outline")} onPress={() => router.push("/account/privacy")} />
         <ListRow
           title="Help & Support"

@@ -3,8 +3,7 @@ import { ActivityIndicator, Alert, Pressable, Share, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import * as Clipboard from "expo-clipboard";
 import { router, Stack, useLocalSearchParams } from "expo-router";
-import { Button, Card, GradientText, Header, Logo, Screen, Text } from "@/components/ui";
-import { ArrowContinueButton } from "@/components/send";
+import { Button, Card, GradientText, Header, Screen, Text } from "@/components/ui";
 import { useOrder } from "@/api/hooks";
 import type { Order } from "@/api/types";
 import { colors } from "@/constants/theme";
@@ -86,22 +85,38 @@ export default function PaymentSuccessScreen() {
       footer={
         order ? (
           <View className="gap-3">
-            <ArrowContinueButton title="Back to Home" tone="dark" onPress={goHome} />
+            <Button title="Track order" onPress={() => router.push(`/orders/${order.id}/track`)} />
             <Button
               title="Download Receipt"
-              variant="outlineDark"
+              variant="outline"
               icon="download-outline"
               onPress={() => Share.share({ title: `Receipt ${order.code}`, message: receiptText(order) })}
             />
-            <Pressable onPress={() => router.push(`/orders/${order.id}/track`)} hitSlop={8} className="self-center py-1">
-              <Text className="font-inter-semibold text-sm text-brand">Track order</Text>
-            </Pressable>
+            <View className="flex-row items-center gap-2 self-center rounded-full border border-line bg-white px-3 py-1.5">
+              {(
+                [
+                  ["home-outline", "Home", "/(tabs)"],
+                  ["document-text-outline", "Orders", "/(tabs)/orders"],
+                  ["person-outline", "Profile", "/(tabs)/profile"],
+                ] as const
+              ).map(([icon, label, href]) => (
+                <Pressable
+                  key={href}
+                  accessibilityRole="button"
+                  accessibilityLabel={label}
+                  onPress={() => router.replace(href)}
+                  className="h-9 w-14 items-center justify-center rounded-full active:bg-brand-light"
+                >
+                  <Ionicons name={icon} size={18} color={colors.ink} />
+                </Pressable>
+              ))}
+            </View>
           </View>
         ) : undefined
       }
     >
       <Stack.Screen options={{ gestureEnabled: false }} />
-      <Header onBack={goHome} right={<Logo size="sm" />} />
+      <Header onBack={goHome} actions />
 
       <View className="items-center px-5">
         <ReceiptIllustration />

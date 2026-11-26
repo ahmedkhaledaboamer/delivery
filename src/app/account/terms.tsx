@@ -45,27 +45,27 @@ export default function TermsScreen() {
 
       <View className="px-5 pt-2">
         <View className="flex-row items-center gap-3">
-          <Text className="flex-1 font-inter-bold text-2xl text-brand-dark">Terms of Service & Disclaimer</Text>
+          <Text className="flex-1 font-inter-bold text-[22px] leading-7">Terms of Service &amp; Disclaimer</Text>
           <Image source={images.clipboard} resizeMode="contain" style={{ width: 96, height: 76 }} />
         </View>
 
-        <Text className="mt-5 font-inter-semibold text-sm text-brand">Important Notice</Text>
-        <Text className="mt-1 text-sm leading-6 text-body">
-          By using APEX AORA delivery services, you acknowledge and agree to the following terms:
+        <Text className="mt-4 font-inter-bold text-base text-brand">Important Notice</Text>
+        <Text className="mt-1 text-xs leading-5 text-brand-dark">
+          By using APEX AORA delivery services, you acknowledge and agree to the following terms and conditions.
         </Text>
 
         {SECTIONS.map((s, i) => (
           <View key={s.title} className="mt-5">
-            <Text className="font-inter-bold text-sm">
+            <Text className="font-inter-bold text-[15px]">
               {i + 1}. {s.title}
             </Text>
-            <Text className="mt-1 text-sm leading-6 text-body">{s.body}</Text>
+            <Text className="mt-1 text-sm leading-6 text-ink">{s.body}</Text>
           </View>
         ))}
 
-        <View className="mt-8 border-t border-line pt-5">
-          <Text className="font-inter-bold text-sm">APEX AORA Delivery Services</Text>
-          <Text className="mt-1 text-sm text-body">Delivering with care, moving with trust.</Text>
+        <View className="mt-6 pb-4">
+          <Text className="font-inter-bold text-[15px]">APEX AORA Delivery Services</Text>
+          <Text className="mt-1 text-sm text-ink">Delivering with care, moving with trust.</Text>
         </View>
       </View>
     </Screen>

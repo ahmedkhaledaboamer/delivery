@@ -1,4 +1,5 @@
 import { Pressable, View } from "react-native";
+import { AccountHeader } from "@/components/account";
 import { router, useLocalSearchParams } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { Button, Card, Header, InfoBanner, RouteStops, Screen, Text } from "@/components/ui";
@@ -26,6 +27,8 @@ export default function OrderDetails() {
 
   return (
     <Screen
+      edges={["bottom"]}
+      background="white"
       footer={
         trackable ? (
           <Button title="Track delivery" onPress={() => router.push(`/orders/${order.id}/track`)} />
@@ -34,16 +37,15 @@ export default function OrderDetails() {
         ) : undefined
       }
     >
-      <Header actions />
+      <AccountHeader
+        eyebrow={order.code}
+        title="Order details"
+        subtitle={`${shortDay(order.createdAt)} · ${formatTime(order.createdAt)} · ${flowLabel(order)}`}
+      />
       <View className="px-5">
-        <Text className="font-inter-semibold text-xs text-brand">{order.code}</Text>
-        <Text className="mt-1 font-inter-bold text-2xl">Order details</Text>
-        <Text className="mt-1 text-xs text-body">
-          {shortDay(order.createdAt)} · {formatTime(order.createdAt)} · {flowLabel(order)}
-        </Text>
 
         <InfoBanner
-          className="mt-5"
+          className="mt-4"
           tone={order.status === "cancelled" ? "danger" : "brand"}
           icon={order.status === "cancelled" ? "close-circle-outline" : "time-outline"}
         >

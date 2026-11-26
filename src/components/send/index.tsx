@@ -1,7 +1,8 @@
 import { ReactNode } from "react";
 import { Pressable, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { Card, Text } from "@/components/ui";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { Card, Header, Text } from "@/components/ui";
 import { LinearGradient } from "expo-linear-gradient";
 import { brandGradient, brandGradientEnd, brandGradientStart, colors } from "@/constants/theme";
 import { formatAED } from "@/lib/format";
@@ -19,6 +20,35 @@ export const PREFERENCES: { value: DeliveryPreference; label: string; icon: keyo
 ];
 
 /** Small grey pill with the step ("4 of 7 · Package"). */
+/**
+ * Step screens (Package, Review): tinted band under the status bar with back + support/bell,
+ * small step label, big title and subtitle. Follow it with <FlowSheet> for the white panel.
+ * Use with <Screen edges={["bottom"]} background="white">.
+ */
+export function FlowHeader({ step, title, subtitle }: { step: string; title: string; subtitle?: string }) {
+  const insets = useSafeAreaInsets();
+  return (
+    <LinearGradient colors={[colors.brandLight, colors.brandLighter]} style={{ paddingTop: insets.top + 8, paddingBottom: 36 }}>
+      <Header actions />
+      <View className="mt-3 px-5">
+        <Text className="font-inter-semibold text-[11px] text-brand">{step}</Text>
+        <Text className="mt-1 font-inter-bold text-2xl">{title}</Text>
+        {subtitle && <Text className="mt-1 text-xs text-body">{subtitle}</Text>}
+      </View>
+    </LinearGradient>
+  );
+}
+
+/** White rounded panel with a grab handle that overlaps <FlowHeader>. */
+export function FlowSheet({ children }: { children: ReactNode }) {
+  return (
+    <View className="-mt-6 flex-1 rounded-t-3xl bg-white px-5 pt-3">
+      <View className="mb-4 h-1 w-12 self-center rounded-full bg-line" />
+      {children}
+    </View>
+  );
+}
+
 export function StepPill({ label, className = "" }: { label: string; className?: string }) {
   return (
     <View className={`self-start rounded-full bg-brand-light px-3 py-1 ${className}`}>

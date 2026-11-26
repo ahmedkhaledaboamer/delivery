@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { AccountHeader } from "@/components/account";
 import { Alert, Pressable, View } from "react-native";
 import { router, useLocalSearchParams } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
@@ -43,18 +44,14 @@ export default function Delivered() {
   };
 
   return (
-    <Screen footer={<Button title="Back to home" loading={rate.isPending} onPress={finish} />}>
-      <Header actions />
+    <Screen edges={["bottom"]} background="white" footer={<Button title="Back to home" loading={rate.isPending} onPress={finish} />}>
+      <AccountHeader
+        title="Delivered. Day made."
+        subtitle={`Your package arrived safely${deliveredAt ? ` at ${deliveredAt}` : ""}.`}
+      />
       <View className="px-5">
-        <View className="h-14 w-14 items-center justify-center rounded-full bg-brand-light">
-          <Ionicons name="checkmark-circle" size={34} color={colors.brand} />
-        </View>
-        <Text className="mt-4 font-inter-bold text-2xl">Delivered. Day made.</Text>
-        <Text className="mt-1 text-sm text-body">
-          Your package arrived safely{deliveredAt ? ` at ${deliveredAt}` : ""}.
-        </Text>
 
-        <Card className="mt-5">
+        <Card className="mt-4">
           <View className="flex-row items-center gap-3">
             {/* TODO: replace with Figma illustration */}
             <View className="h-12 w-12 items-center justify-center rounded-xl bg-brand-lighter">

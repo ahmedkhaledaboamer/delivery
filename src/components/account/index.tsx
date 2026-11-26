@@ -1,10 +1,46 @@
 import { ReactNode } from "react";
 import { ActivityIndicator, Image, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { Text } from "@/components/ui";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { Header, Text } from "@/components/ui";
 import { colors } from "@/constants/theme";
 
 type IconName = keyof typeof Ionicons.glyphMap;
+
+/**
+ * Tinted top band used by My profile / Edit profile / Settings:
+ * runs under the status bar, back button + support/bell on the right, then title + subtitle.
+ * Use with <Screen edges={["bottom"]} background="white">.
+ */
+export function AccountHeader({
+  title,
+  subtitle,
+  eyebrow,
+  onBack,
+}: {
+  title: string;
+  subtitle?: string;
+  /** Small brand-coloured line above the title (e.g. order code). */
+  eyebrow?: string;
+  onBack?: () => void;
+}) {
+  const insets = useSafeAreaInsets();
+  return (
+    <View className="bg-brand-lighter pb-7" style={{ paddingTop: insets.top + 8 }}>
+      <Header actions onBack={onBack} />
+      <View className="mt-4 px-5">
+        {eyebrow && <Text className="mb-1 font-inter-semibold text-xs text-brand">{eyebrow}</Text>}
+        <Text className="font-inter-semibold text-[22px] text-ink">{title}</Text>
+        {subtitle && <Text className="mt-1.5 text-xs text-body">{subtitle}</Text>}
+      </View>
+    </View>
+  );
+}
+
+/** Trailing icon for account rows — thin grey outline like the design. */
+export const RowIcon = ({ name, color = colors.body }: { name: IconName; color?: string }) => (
+  <Ionicons name={name} size={18} color={color} />
+);
 
 /** Ionicon inside a rounded light-violet tile (stand-in for the Figma icon art). */
 export function IconTile({

@@ -4,7 +4,7 @@ import { router, useLocalSearchParams } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 import { Button, Header, RadioDot, Screen, Text, TextField } from "@/components/ui";
-import { IconTile } from "@/components/account";
+import { LinearGradient } from "expo-linear-gradient";
 import { useCreateTicket } from "@/api/hooks";
 import { colors } from "@/constants/theme";
 import { images } from "@/constants/images";
@@ -26,7 +26,7 @@ function IssueTypeSelect({ value, onChange }: { value: string; onChange: (v: str
         onPress={() => setOpen(true)}
         className="h-14 flex-row items-center gap-3 rounded-xl border border-line bg-white px-4"
       >
-        <Ionicons name="list-outline" size={18} color={colors.muted} />
+        <Ionicons name="cube-outline" size={18} color={colors.brandDark} />
         <Text className={`flex-1 text-sm ${value ? "text-ink" : "text-muted"}`}>{value || "Select issue type"}</Text>
         <Ionicons name="chevron-down" size={18} color={colors.body} />
       </Pressable>
@@ -128,20 +128,25 @@ export default function NewTicketScreen() {
         <Button title="Submit Ticket" icon="paper-plane-outline" disabled={!canSubmit} loading={createTicket.isPending} onPress={submit} />
       }
     >
-      <Header inlineTitle="Create New Ticket" actions />
-
-      <View className="px-5 pt-2">
-        <View className="mb-5 flex-row items-center rounded-2xl bg-brand-lighter p-4">
+      <LinearGradient colors={[colors.brandLighter, colors.brandLight]}>
+        <Header inlineTitle="Create New Ticket" actions />
+        <View className="flex-row items-center px-5 pb-8">
           <View className="flex-1 pr-2">
-            <Text className="font-inter-bold text-xl text-brand-dark">Tell us about your issue</Text>
-            <Text className="mt-1 text-xs leading-5 text-body">Create a support ticket and our team will get back to you shortly.</Text>
+            <Text className="font-inter-bold text-2xl text-brand-dark">Tell us about your issue</Text>
+            <Text className="mt-1 text-xs leading-5 text-body">Create a support ticket and our team will get back to you soon.</Text>
           </View>
-          <Image source={images.headset} resizeMode="contain" style={{ width: 90, height: 72 }} />
+          <Image source={images.headset} resizeMode="contain" style={{ width: 100, height: 80 }} />
         </View>
+      </LinearGradient>
+
+      {/* White form panel overlapping the tinted header */}
+      <View className="-mt-5 rounded-t-3xl bg-white px-5 pt-5">
 
         <IssueTypeSelect value={issueType} onChange={setIssueType} />
 
-        <Text className="mb-2 font-inter-medium text-sm">Related To</Text>
+        <Text className="mb-2 font-inter-medium text-sm">
+          Related To<Text className="text-xs text-muted"> (Optional)</Text>
+        </Text>
         <View className="mb-4 flex-row gap-3">
           <RelatedOption selected={relatedTo === "order"} label="Order" icon="cube-outline" onPress={() => setRelatedTo("order")} />
           <RelatedOption selected={relatedTo === "account"} label="Account" icon="person-outline" onPress={() => setRelatedTo("account")} />
@@ -151,10 +156,11 @@ export default function NewTicketScreen() {
           <TextField
             label="Order Number"
             hint="optional"
-            placeholder="e.g. RS-78451"
+            placeholder="e.g. APX-78452"
             value={orderNumber}
             onChangeText={setOrderNumber}
             autoCapitalize="characters"
+            left={<Text className="mr-2 font-inter-semibold text-sm text-muted">#</Text>}
           />
         )}
 
@@ -176,11 +182,11 @@ export default function NewTicketScreen() {
           accessibilityRole="button"
           onPress={pickAttachments}
           disabled={attachments.length >= MAX_ATTACHMENTS}
-          className={`items-center rounded-xl border border-dashed border-brand bg-brand-lighter py-5 ${attachments.length >= MAX_ATTACHMENTS ? "opacity-50" : "active:opacity-70"}`}
+          className={`items-center rounded-xl border border-dashed border-brand bg-white py-5 ${attachments.length >= MAX_ATTACHMENTS ? "opacity-50" : "active:opacity-70"}`}
         >
-          <Ionicons name="cloud-upload-outline" size={24} color={colors.brand} />
+          <Ionicons name="image-outline" size={24} color={colors.brandDark} />
           <Text className="mt-1 font-inter-medium text-sm">Upload photos or files</Text>
-          <Text className="mt-0.5 text-[11px] text-muted">PNG, JPG · up to {MAX_ATTACHMENTS} files</Text>
+          <Text className="mt-0.5 text-[11px] text-muted">PNG, JPG or PDF (Max 10 MB)</Text>
         </Pressable>
 
         {attachments.length > 0 && (

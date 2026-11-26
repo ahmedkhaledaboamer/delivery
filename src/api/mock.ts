@@ -183,33 +183,33 @@ const db: {
   wallet: {
     balance: 1678,
     transactions: [
-      { id: "w1", title: "Delivery #RA1234", date: "Mar 12, 2026", amount: -24 },
-      { id: "w2", title: "Delivery #RA1234", date: "Mar 10, 2026", amount: 24 },
-      { id: "w3", title: "Delivery #RA1234", date: "Mar 08, 2026", amount: -24 },
-      { id: "w4", title: "Delivery #RA1234", date: "Mar 05, 2026", amount: -24 },
-      { id: "w5", title: "Delivery #RA1234", date: "Mar 01, 2026", amount: -24 },
+      { id: "w1", title: "Delivery- #APX1234", date: "Nov 12, 2026 · 10:00 AM", amount: -34 },
+      { id: "w2", title: "Delivery- #APX1234", date: "Nov 10, 2026 · 10:00 AM", amount: 34 },
+      { id: "w3", title: "Delivery- #APX1234", date: "Nov 08, 2026 · 10:00 AM", amount: -34 },
+      { id: "w4", title: "Delivery- #APX1234", date: "Nov 05, 2026 · 10:00 AM", amount: -34 },
+      { id: "w5", title: "Delivery- #APX1234", date: "Nov 01, 2026 · 10:00 AM", amount: -34 },
     ],
   },
   loyalty: {
     points: 1765,
     tier: "Gold Member",
     nextTier: "Platinum",
-    tierProgress: 1765 / 2500,
-    tierTarget: 2500,
+    tierProgress: 1765 / 2000,
+    tierTarget: 2000,
     rewards: [
-      { id: "r1", title: "AED 10 Off", subtitle: "On orders above AED 50", points: 500 },
+      { id: "r1", title: "AED 10 Off", subtitle: "For orders above AED 50", points: 500 },
       { id: "r2", title: "Free Delivery", subtitle: "On your next order", points: 800 },
     ],
     history: [
-      { id: "h1", title: "Reward Redemption", date: "Mar 12, 2026", points: -300 },
-      { id: "h2", title: "Order #RA5621", date: "Mar 10, 2026", points: 100 },
-      { id: "h3", title: "Order #RA5700", date: "Mar 08, 2026", points: 80 },
+      { id: "h1", title: "Reward Redemption", date: "Nov 8, 2026", points: -500 },
+      { id: "h2", title: "Order #APX5821", date: "Nov 7, 2026", points: 100 },
+      { id: "h3", title: "Order #APX5790", date: "Nov 5, 2026", points: 80 },
     ],
   },
   tickets: [
-    { id: "t1", title: "Order Issue", orderCode: "#RS-78451", createdAt: "Mar 9, 2026", status: "in-progress", category: "order" },
-    { id: "t2", title: "Payment & Refund", orderCode: "#RS-78201", createdAt: "Mar 3, 2026", status: "resolved", category: "payment" },
-    { id: "t3", title: "Account Issue", createdAt: "Feb 27, 2026", status: "closed", category: "account" },
+    { id: "t1", title: "Order Issue", orderCode: "#APX-78452", createdAt: "Nov 8, 2026, 10:24 AM", status: "in-progress", category: "order" },
+    { id: "t2", title: "Payment & Refund", orderCode: "#APX-77109", createdAt: "Nov 4, 2026, 03:15 PM", status: "resolved", category: "payment" },
+    { id: "t3", title: "Account Issue", orderCode: "#APX-76540", createdAt: "Nov 1, 2026, 06:18 PM", status: "closed", category: "account" },
   ],
 };
 

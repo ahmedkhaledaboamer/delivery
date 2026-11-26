@@ -3,7 +3,8 @@ import { Image, RefreshControl, ScrollView, TextInput, View } from "react-native
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router, useLocalSearchParams } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
-import { Button, Header, InfoBanner, PageTitle, SectionLabel, SegmentedTabs, TAB_BAR_SPACE, Text } from "@/components/ui";
+import { Button, InfoBanner, SectionLabel, SegmentedTabs, TAB_BAR_SPACE, Text } from "@/components/ui";
+import { AccountHeader } from "@/components/account";
 import { OrderCard, ScheduledOrderRow } from "@/components/orders/OrderCard";
 import { isActive, QueryState } from "@/components/orders/status";
 import { useOrders } from "@/api/hooks";
@@ -78,7 +79,7 @@ export default function OrdersScreen() {
   const hasNoOrders = !isLoading && !isError && (data?.length ?? 0) === 0;
 
   return (
-    <SafeAreaView edges={["top"]} className="flex-1 bg-surface">
+    <SafeAreaView edges={[]} className="flex-1 bg-white">
       <ScrollView
         className="flex-1"
         contentContainerStyle={{ flexGrow: 1, paddingBottom: TAB_BAR_SPACE }}
@@ -86,11 +87,10 @@ export default function OrdersScreen() {
         showsVerticalScrollIndicator={false}
         refreshControl={<RefreshControl refreshing={isRefetching} onRefresh={() => void refetch()} tintColor={colors.brand} colors={[colors.brand]} />}
       >
-        <Header hideBack actions />
-        <PageTitle title="My orders" subtitle="A clear view of every delivery." />
+        <AccountHeader title="My orders" subtitle="A clear view of every delivery." onBack={() => router.navigate("/(tabs)")} />
 
         <View className="px-5">
-          <View className="mt-5 h-12 flex-row items-center gap-2 rounded-xl border border-line bg-white px-4">
+          <View className="mt-5 h-12 flex-row items-center gap-2 rounded-xl border border-brand bg-white px-4">
             <Ionicons name="search-outline" size={18} color={colors.muted} />
             <TextInput
               placeholder="Search"

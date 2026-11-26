@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import { Pressable, View } from "react-native";
 import { router } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
-import { Button, Card, Header, InfoBanner, ListRow, PageTitle, Screen, TAB_BAR_SPACE, Text, TextField } from "@/components/ui";
-import { Avatar, IconTile, QueryState } from "@/components/account";
+import { Button, Card, InfoBanner, ListRow, Screen, TAB_BAR_SPACE, Text, TextField } from "@/components/ui";
+import { AccountHeader, Avatar, IconTile, QueryState, RowIcon } from "@/components/account";
 import { useProfile } from "@/api/hooks";
 import type { Address } from "@/api/types";
 import { useAppSelector } from "@/store";
@@ -76,36 +76,37 @@ export default function ProfileScreen() {
   const avatar = user?.avatar ?? profile.data?.avatar;
 
   return (
-    <Screen edges={["top"]}>
+    <Screen edges={[]} background="white">
       <View style={{ paddingBottom: TAB_BAR_SPACE }}>
-        <View className="bg-brand-lighter pb-5">
-          <Header hideBack actions />
-          <PageTitle title="My profile" subtitle="The details that keep you moving." />
-        </View>
+        <AccountHeader
+          title="My profile"
+          subtitle="The details that keep you moving."
+          onBack={() => router.navigate("/(tabs)")}
+        />
 
         {isGuest ? (
           <GuestCard />
         ) : (
           <QueryState isLoading={profile.isLoading} error={profile.error}>
             <View className="px-5">
-              <View className="flex-row items-center gap-4 border-b border-line py-5">
-                <Avatar name={name} uri={avatar} size={56} />
+              <View className="flex-row items-center gap-4 pb-2 pt-5">
+                <Avatar name={name} uri={avatar} size={60} />
                 <View className="flex-1">
-                  <Text className="font-inter-bold text-lg">{name}</Text>
-                  <Text className="mt-0.5 text-xs text-muted">{maskPhone(phone)}</Text>
+                  <Text className="font-inter-semibold text-base">{name}</Text>
+                  <Text className="mt-1 text-xs text-muted">{maskPhone(phone)}</Text>
                   <Pressable hitSlop={8} onPress={() => router.push("/account/edit-profile")}>
-                    <Text className="mt-1 font-inter-medium text-xs text-brand">Edit profile</Text>
+                    <Text className="mt-1.5 font-inter-medium text-xs text-brand">Edit profile</Text>
                   </Pressable>
                 </View>
               </View>
 
-              <Text className="mt-5 font-inter-bold text-base">Saved addresses</Text>
+              <Text className="mt-4 font-inter-semibold text-sm">Saved addresses</Text>
               {addresses.map((a) => (
                 <ListRow
                   key={a.id}
                   title={a.label}
                   subtitle={a.address}
-                  trailing={<Ionicons name={ADDRESS_ICON[a.icon]} size={18} color={colors.body} />}
+                  trailing={<RowIcon name={ADDRESS_ICON[a.icon]} />}
                 />
               ))}
               {adding ? (
@@ -118,24 +119,24 @@ export default function ProfileScreen() {
                   }}
                 />
               ) : (
-                <ListRow title="Add a new address" trailingIcon="add" onPress={() => setAdding(true)} />
+                <ListRow title="Add a new address" trailing={<RowIcon name="add" />} onPress={() => setAdding(true)} />
               )}
 
-              <Text className="mt-6 font-inter-bold text-base">Here to help</Text>
+              <Text className="mt-4 font-inter-semibold text-sm">Here to help</Text>
               <ListRow
                 title="Help & support"
                 subtitle="Delivery questions? Talk to us."
-                trailingIcon="headset-outline"
+                trailing={<RowIcon name="headset-outline" />}
                 onPress={() => router.push("/account/support")}
               />
               <ListRow
                 title="Settings"
                 subtitle="Language, notifications and security"
-                trailingIcon="options-outline"
+                trailing={<RowIcon name="options-outline" />}
                 onPress={() => router.push("/account/settings")}
               />
 
-              <InfoBanner className="mt-5">Delivering across Colombo, Sri Lanka.</InfoBanner>
+              <InfoBanner className="mt-4">Delivering across Colombo, Sri Lanka.</InfoBanner>
             </View>
           </QueryState>
         )}

@@ -1,10 +1,11 @@
 import { Pressable, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
-import { Button, Header, Screen, Text, TextField } from "@/components/ui";
+import { LinearGradient } from "expo-linear-gradient";
+import { Button, Screen, Text, TextField } from "@/components/ui";
 import { TermsAgreement } from "@/components/delivery";
-import { PREFERENCES, StepPill } from "@/components/send";
-import { colors } from "@/constants/theme";
+import { FlowHeader, FlowSheet, PREFERENCES } from "@/components/send";
+import { brandGradient, colors } from "@/constants/theme";
 import { useAppDispatch, useAppSelector } from "@/store";
 import {
   setDeliveryNotes,
@@ -21,14 +22,14 @@ export default function PackageScreen() {
   const canContinue = agreedToTerms && (isShopping || !!packageContents.trim());
 
   return (
-    <Screen footer={<Button title="Continue" disabled={!canContinue} onPress={() => router.push("/send/review")} />}>
-      <Header actions />
-      <View className="px-5">
-        <StepPill label="4 of 7 · Package" />
-        <Text className="mt-3 font-inter-bold text-2xl">What are you sending?</Text>
-        <Text className="mt-1 text-sm text-body">A few details help us handle it with care.</Text>
-
-        <View className="mt-6">
+    <Screen
+      edges={["bottom"]}
+      background="white"
+      footer={<Button title="Continue" disabled={!canContinue} onPress={() => router.push("/send/review")} />}
+    >
+      <FlowHeader step="4 of 7 · Package" title="What are you sending?" subtitle="A few details help us handle it with care." />
+      <FlowSheet>
+        <View>
           {!isShopping && (
             <TextField
               label="What's inside?"
@@ -51,13 +52,21 @@ export default function PackageScreen() {
                   accessibilityRole="checkbox"
                   accessibilityState={{ checked: active }}
                   onPress={() => dispatch(togglePreference(p.value))}
-                  className={`aspect-square flex-1 items-center justify-center rounded-xl border px-1 ${
-                    active ? "border-brand bg-brand" : "border-line bg-white"
+                  className={`aspect-square flex-1 items-center justify-center overflow-hidden rounded-xl border px-1 ${
+                    active ? "border-brand bg-brand" : "border-brand-light bg-white"
                   }`}
                 >
+                  {active && (
+                    <LinearGradient
+                      colors={[...brandGradient]}
+                      start={{ x: 0, y: 0 }}
+                      end={{ x: 1, y: 1 }}
+                      style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0 }}
+                    />
+                  )}
                   <Ionicons name={p.icon} size={18} color={active ? colors.white : colors.brand} />
                   <Text
-                    className={`mt-1 text-center text-[10px] leading-3 ${active ? "font-inter-semibold text-white" : "text-body"}`}
+                    className={`mt-1 text-center text-[10px] leading-3 ${active ? "font-inter-semibold text-white" : "text-ink"}`}
                   >
                     {p.label}
                   </Text>
@@ -78,9 +87,11 @@ export default function PackageScreen() {
           />
 
           <Text className="mb-5 text-xs text-muted">Please seal your package before pickup.</Text>
-          <TermsAgreement />
+          <View className="mb-4 rounded-xl border border-brand-light bg-brand-lighter p-4">
+            <TermsAgreement />
+          </View>
         </View>
-      </View>
+      </FlowSheet>
     </Screen>
   );
 }

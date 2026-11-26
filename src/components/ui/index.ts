@@ -1,5 +1,6 @@
 export { Text } from "./Text";
 export { GradientText } from "./GradientText";
+export { GradientIcon } from "./GradientIcon";
 export { Button } from "./Button";
 export { IconButton } from "./IconButton";
 export { Logo } from "./Logo";
